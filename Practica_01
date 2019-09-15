@@ -1,0 +1,338 @@
+#----------EJERCICIO 01----------#
+
+observa(maria,omar).
+observa(laura,omar).
+observa(maria,flavio).
+observa(gabriela,flavio).
+observa(maria,carlos).
+
+#----------EJERCICIO 02----------#
+
+conoce(franco,ingles).
+conoce(renzo,ingles).
+conoce(franco,frances).
+conoce(renzo,frances).
+conoce(franco,italiano).
+conoce(marco,ingles).
+conoce(omar,ingles).
+conoce(maria,frances).
+
+habla_ingles_y_frances(Persona):-
+    conoce(Persona,ingles),
+    conoce(Persona,frances).
+
+#----------EJERCICIO 03----------#
+
+grupo(1,brasil).
+grupo(1,españa).
+grupo(1,jamaica).
+grupo(1,italia).
+grupo(2,argentina).
+grupo(2,nigeria).
+grupo(2,holanda).
+grupo(2,escocia).
+
+rival(E1,E2):-
+    grupo(G,E1),
+    grupo(G,E2),
+    E2 \= E1.
+
+#----------EJERCICIO 04----------#
+
+hombre(remache).
+hombre(fede).
+hombre(moni).
+hombre(agustin).
+hombre(facu).
+hombre(moli).
+hombre(negro).
+mujer(angela).
+mujer(ana).
+mujer(martha).
+mujer(belen).
+padres(remache,martha,negro).
+padres(ana,martha,negro).
+padres(fede,angela,remache).
+padres(agustin,angela,remache).
+padres(facu,ana,moni).
+padres(moli,ana,moni).
+padres(belen,ana,moni).
+
+hermana(A,B):-
+    mujer(A),
+    A \= B,
+    padres(A,M,P),
+    padres(B,M,P).
+
+nieto(A,B):-
+    hombre(A),
+    padres(A,M,_),
+    padres(M,B,_).
+nieto(A,B):-
+    hombre(A),
+    padres(A,_,P),
+    padres(P,B,_).
+nieto(A,B):-
+    hombre(A),
+    padres(A,M,_),
+    padres(M,_,B).
+nieto(A,B):-
+    hombre(A),
+    padres(A,_,P),
+    padres(P,_,B).
+
+abuelo(A,B):-
+    hombre(A),
+    padres(B,M,_),
+    padres(M,_,A).
+abuelo(A,B):-
+    hombre(A),
+    padres(B,_,P),
+    padres(P,_,A).
+
+tia(A,B):-
+    mujer(A),
+    padres(B,M,_),
+    hermana(A,M).
+tia(A,B):-
+    mujer(A),
+    padres(B,_,P),
+    hermana(A,P).
+
+#----------EJERCICIO 05----------#
+
+%auto(patente,propietario)
+auto(hti687,pedro).
+auto(jug144,juan).
+auto(gqm758,pedro).
+auto(lod445,carlos).
+auto(lfz569,miguel).
+auto(axk798,maria).
+
+% deuda(patente, monto adeudado)
+deuda(lfz569,2000).
+deuda(gqm758,15000).
+deuda(axk798,1000).
+
+tiene_deuda(P):-
+    auto(Patente,P),
+    deuda(Patente,_).
+
+#----------EJERCICIO 06----------#
+
+artista(carolina,guitarrista,rosario).
+artista(jose,guitarrista,rosario).
+artista(mariano,cantante,rosario).
+artista(laura,baterista,rosario).
+artista(miguel,guitarrista,funes).
+artista(silvia,cantante,funes).
+artista(mauro,cantante,funes).
+artista(diego,baterista,casilda).
+artista(eduardo,baterista,roldan).
+
+formar_banda(Ciudad):-
+    artista(A,guitarrista,Ciudad),
+    artista(B,cantante,Ciudad),
+    artista(C,baterista,Ciudad),
+    A \= B,
+    A \= C,
+    B \= C.
+
+#----------EJERCICIO 07----------#
+
+calculadora:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Suma'),
+    writeln('2-Resta'),
+    writeln('3-Multiplicacion'),
+    writeln('4-Division'),
+    write('Ingrese una opcion: '),
+    read(OP),
+    OP \= 0,
+    opcion(OP),
+    calculadora.
+
+calculadora:-
+    nl,
+    writeln('Adios...').
+
+opcion(1):-
+    nl,
+    write('Ingrese el primer numero: '),
+    read(N1),
+    nl,
+    write('Ingrese el segundo numero: '),
+    read(N2),
+    Resultado is N1 +  N2,
+    nl,
+    write('El resultado es: '),
+    writeln(Resultado).
+
+opcion(2):-
+    nl,
+    write('Ingrese el primer numero: '),
+    read(N1),
+    nl,
+    write('Ingrese el segundo numero: '),
+    read(N2),
+    Resultado is N1 -  N2,
+    nl,
+    write('El resultado es: '),
+    writeln(Resultado).
+
+opcion(3):-
+    nl,
+    write('Ingrese el primer numero: '),
+    read(N1),
+    nl,
+    write('Ingrese el segundo numero: '),
+    read(N2),
+    Resultado is N1 *  N2,
+    nl,
+    write('El resultado es: '),
+    writeln(Resultado).
+
+opcion(4):-
+    nl,
+    write('Ingrese el primer numero: '),
+    read(N1),
+    nl,
+    write('Ingrese el segundo numero: '),
+    read(N2),
+    dividir(N1,N2).
+
+dividir(_,0):-
+    nl,
+    writeln('¡ERROR! - No se puede dividir por 0').
+dividir(N1,N2):-
+    Resultado is N1 / N2,
+    nl,
+    write('El resultado es: '),
+    writeln(Resultado).
+
+#----------EJERCICIO 08----------#
+--------NI GANAS DE HACERLO-------
+
+#----------EJERCICIO 09----------#
+
+hijo(juan,miguel).
+hijo(jose,miguel).
+hijo(miguel,roberto).
+hijo(julio,roberto).
+hijo(roberto,carlos).
+
+descendiente(A,B):-
+    hijo(A,B).
+descendiente(A,B):-
+    hijo(H,B),
+    descendiente(A,H).
+
+#----------EJERCICIO 10----------#
+
+precede(a,c).
+precede(b,d).
+precede(b,f).
+precede(c,d).
+precede(d,e).
+precede(e,h).
+precede(e,i).
+precede(f,g).
+precede(g,j).
+precede(h,j).
+precede(i,j).
+
+requiere_de(X,Y):-
+    precede(X,Y).
+
+requiere_de(X,Y):-
+    precede(Z,Y),
+    requiere_de(X,Z).
+
+#----------EJERCICIO 11 - 12 - 13----------#
+
+menu:-
+    nl,
+    writeln('-----Factorial y Sumatoria-----'),
+    writeln('0-Salir'),
+    writeln('1-Factorial'),
+    writeln('2-Sumatoria'),
+    writeln('3-Sumatoria pares'),
+    writeln('4-Sumatoria impares'),
+    write('Ingrese una opcion: '),
+    read(OP),
+    OP \= 0,
+    opcion(OP),
+    menu.
+
+menu:-
+    nl,
+    writeln('Adios...').
+
+opcion(1):-
+    nl,
+    write('Ingrese el número: '),
+    read(Numero),
+    factorial(Numero,Factorial),
+    nl,
+    write('El factorial del numero ingresado es: '),
+    writeln(Factorial).
+
+opcion(2):-
+    nl,
+    write('Ingrese el número: '),
+    read(Numero),
+    sumatoria(Numero,Suma),
+    nl,
+    write('La sumatoria del numero ingresado es: '),
+    writeln(Suma).
+
+opcion(3):-
+    nl,
+    write('Ingrese el número: '),
+    read(Numero),
+    sumatoria_pares(Numero,Suma),
+    nl,
+    write('La sumatoria de los numeros pares es: '),
+    writeln(Suma).
+
+opcion(4):-
+    nl,
+    write('Ingrese el número: '),
+    read(Numero),
+    sumatoria_impares(Numero,Suma),
+    nl,
+    write('La sumatoria de los numeros impares es: '),
+    writeln(Suma).
+
+factorial(1,1).
+factorial(Numero,Factorial):-
+    Ant is Numero - 1,
+    factorial(Ant,F),
+    Factorial is Numero * F.
+
+sumatoria(0,0).
+sumatoria(Numero,Suma):-
+    Ant is Numero - 1,
+    sumatoria(Ant,S),
+    Suma is Numero + S.
+
+sumatoria_pares(0,0).
+sumatoria_pares(Numero,Suma):-
+    0 is Numero mod 2,
+    Ant is Numero - 1,
+    sumatoria_pares(Ant,S),
+    Suma is Numero + S.
+sumatoria_pares(Numero,Suma):-
+    Num is Numero - 1,
+    sumatoria_pares(Num,Suma).
+
+sumatoria_impares(0,0).
+sumatoria_impares(Numero,Suma):-
+    1 is Numero mod 2,
+    Ant is Numero - 1,
+    sumatoria_impares(Ant,S),
+    Suma is Numero + S.
+sumatoria_impares(Numero,Suma):-
+    Num is Numero - 1,
+    sumatoria_impares(Num,Suma).
