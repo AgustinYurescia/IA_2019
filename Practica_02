@@ -1,0 +1,347 @@
+#----------EJERCICIO 01----------#
+
+menu:-
+    writeln('Ingrese una lista de elementos(con "fin" finaliza): '),
+    leer(Lista),
+    nl,
+    write('La lista ingresada es: '),
+    writeln(Lista).
+
+leer([H|T]):-
+    read(H),
+    H \= 'fin',
+    leer(T).
+leer([]).
+
+#----------EJERCICIO 02----------#
+
+menu:-
+    writeln('Ingrese una lista de elementos(con "fin" finaliza): '),
+    leer([H|T]),
+    nl,
+    write('La cabeza de la lista ingresada es: '),
+    writeln(H),
+    write('La cola de la lista ingresada es: '),
+    writeln(T).
+
+leer([H|T]):-
+    read(H),
+    H \= 'fin',
+    leer(T).
+leer([]).
+
+#----------EJERCICIO 03----------#
+
+menu:-
+    writeln('Ingrese una lista de elementos(con "fin" finaliza): '),
+    leer([H|_]),
+    nl,
+    write('El primer elemento es: '),
+    writeln(H).
+
+leer([H|T]):-
+    read(H),
+    H \= 'fin',
+    leer(T).
+leer([]).
+
+#----------EJERCICIO 04----------#
+
+menu:-
+    writeln('Ingrese una lista de elementos(con "fin" finaliza): '),
+    leer([H|[HT|_]]),
+    nl,
+    write('El primer elemento es: '),
+    writeln(H),
+    write('El segundo elemento es: '),
+    writeln(HT).
+
+
+leer([H|T]):-
+    read(H),
+    H \= 'fin',
+    leer(T).
+leer([]).
+
+#----------EJERCICIO 05----------#
+
+menu:-
+    writeln('Ingrese una lista de elementos(con "fin" finaliza): '),
+    leer(Lista),
+    nl,
+    mostrar_ultimo(Lista).
+
+leer([H|T]):-
+    read(H),
+    H \= 'fin',
+    leer(T).
+leer([]).
+
+mostrar_ultimo([H|[]]):-
+    write('El último elemento es: '),
+    writeln(H).
+mostrar_ultimo([_|T]):-
+    mostrar_ultimo(T).
+
+#----------EJERCICIO 06----------#
+
+menu:-
+    writeln('Ingrese una lista de enteros(con "fin" finaliza): '),
+    leer([H|T]),
+    obtener_ultimo([H|T],Ultimo),
+    Resta is H - Ultimo,
+    nl,
+    write('La resta entre el primero y el último es: '),
+    writeln(Resta).
+
+leer([H|T]):-
+    read(H),
+    H \= 'fin',
+    leer(T).
+leer([]).
+
+obtener_ultimo([H|[]],H).
+obtener_ultimo([_|T],Ultimo):-
+    obtener_ultimo(T,Ultimo).
+
+#----------EJERCICIO 07----------#
+
+menu:-
+    writeln('Ingrese una lista de elementos(con "fin" finaliza): '),
+    leer(Lista),
+    contar(Lista,Cont),
+    nl,
+    write('La cantidad de elementos es: '),
+    writeln(Cont).
+
+leer([H|T]):-
+    read(H),
+    H \= 'fin',
+    leer(T).
+leer([]).
+
+contar([],0).
+contar([_|T],Cont):-
+    contar(T,C),
+    Cont is C + 1.
+
+#----------EJERCICIO 08----------#
+
+menu:-
+    writeln('Ingrese una lista de enteros(con "fin" finaliza): '),
+    leer(Lista),
+    sumar(Lista,Suma),
+    nl,
+    write('La suma de los elementos es: '),
+    writeln(Suma).
+
+leer([H|T]):-
+    read(H),
+    H \= 'fin',
+    leer(T).
+leer([]).
+
+sumar([],0).
+sumar([H|T],Suma):-
+    sumar(T,S),
+    Suma is S + H.
+
+#----------EJERCICIO 09----------#
+
+menu:-
+    writeln('Ingrese una lista de enteros(con "fin" finaliza): '),
+    leer(L),
+    promedio(L,S,C),
+    nl,
+    P is S/C,
+    write('El promedio de los elementos es: '),
+    writeln(P).
+
+leer([H|T]):-
+    read(H),
+    H \= 'fin',
+    leer(T).
+leer([]).
+
+promedio(L,S,C):-
+    sumar(L,S),
+    contar(L,C).
+
+sumar([],0).
+sumar([H|T],Suma):-
+    sumar(T,S),
+    Suma is S + H.
+
+contar([],0).
+contar([_|T],Cont):-
+    contar(T,C),
+    Cont is C + 1.
+
+#----------EJERCICIO 10----------#
+
+menu:-
+    writeln('Ingrese una lista(con "fin" finaliza): '),
+    leer(Lista),
+    nl,
+    write('Ingrese un elemento: '),
+    read(Elemento),
+    buscar(Lista,Elemento).
+
+leer([H|T]):-
+    read(H),
+    H \= 'fin',
+    leer(T).
+leer([]).
+
+buscar([Elemento|_],Elemento):-
+    nl,
+    writeln('El elemento existe en la lista.').
+buscar([_|T],Elemento):-
+    buscar(T,Elemento).
+buscar(_,_):-
+    nl,
+    writeln('El elemento no existe en la lista.').
+
+#----------EJERCICIO 11----------#
+
+menu:-
+    writeln('Ingrese una lista de enteros(con "fin" finaliza): '),
+    leer(Lista),
+    nl,
+    buscar_mayor(Lista,0,Mayor),
+    write('El mayor es: '),
+    writeln(Mayor).
+
+leer([H|T]):-
+    read(H),
+    H \= 'fin',
+    leer(T).
+leer([]).
+
+buscar_mayor([],Mayor,Mayor).
+buscar_mayor([H|T],Mayor,May):-
+    H > Mayor,
+    buscar_mayor(T,H,May).
+buscar_mayor([_|T],Mayor,May):-
+    buscar_mayor(T,Mayor,May).
+
+#----------EJERCICIO 12----------#
+
+menu:-
+    writeln('Ingrese una lista de enteros(con "fin" finaliza): '),
+    leer(Lista),
+    nl,
+    buscar_menor(Lista,10000000,Menor),
+    write('El menor es: '),
+    writeln(Menor).
+
+leer([H|T]):-
+    read(H),
+    H \= 'fin',
+    leer(T).
+leer([]).
+
+buscar_menor([],Menor,Menor).
+buscar_menor([H|T],Menor,Men):-
+    H < Menor,
+    buscar_menor(T,H,Men).
+buscar_menor([_|T],Menor,Men):-
+    buscar_menor(T,Menor,Men).
+
+#----------EJERCICIO 13----------#
+
+menu:-
+    writeln('Ingrese una lista(con "fin" finaliza): '),
+    leer(Lista1),
+    nl,
+    writeln('Ingrese otra lista(con "fin" finaliza): '),
+    leer(Lista2),
+    nl,
+    concatenar(Lista1,Lista2,Lista3),
+    write('Las dos listas concatenadas quedan: '),
+    writeln(Lista3).
+
+leer([H|T]):-
+    read(H),
+    H \= 'fin',
+    leer(T).
+leer([]).
+
+concatenar([],[],[]).
+concatenar([H1|T1],Lista2,[H1|T3]):-
+    concatenar(T1,Lista2,T3).
+concatenar([],[H2|T2],[H2|T3]):-
+    concatenar([],T2,T3).
+
+#----------EJERCICIO 14----------#
+
+
+
+#----------EJERCICIO 15----------#
+
+
+
+#----------EJERCICIO 16----------#
+
+menu:-
+    writeln('Ingrese una lista(con "fin" finaliza): '),
+    leer(Lista),
+    nl,
+    writeln('Ingrese un elemento: '),
+    read(Elemento),
+    nl,
+    contar_elemento(Lista,Elemento,Cont),
+    write('La cantidad de veces que aparece el elemento es: '),
+    writeln(Cont).
+
+leer([H|T]):-
+    read(H),
+    H \= 'fin',
+    leer(T).
+leer([]).
+
+contar_elemento([],_,0).
+
+contar_elemento([H|T],Elemento,Cont):-
+    H = Elemento,
+    contar_elemento(T,Elemento,C),
+    Cont is C + 1.
+
+contar_elemento([_|T],Elemento,Cont):-
+    contar_elemento(T,Elemento,Cont).
+
+#----------EJERCICIO 17----------#
+
+visita(agustin,[rosario,vedia]).
+visita(sasha,[rosario,vedia,sn]).
+
+menu:-
+    writeln('Ingrese nombre de la persona: '),
+    read(P),
+    nl,
+    writeln('Ingrese el nombre de la ciudad: '),
+    read(C),
+    nl,
+    visito_ciudad(P,C).
+
+visito_ciudad(P,C):-
+    obtener_ciudades(P,Ciudades),
+    existe_en(C,Ciudades).
+
+obtener_ciudades(P,Ciudades):-
+    visita(P,Ciudades).
+obtener_ciudades(_,_):-
+    nl,
+    writeln('La persona no existe.').
+
+existe_en(C,[C|_]):-
+    nl,
+    writeln('La persona visitó la ciudad.').
+existe_en(C,[_|T]):-
+    existe_en(C,T).
+existe_en(_,_):-
+    nl,
+    writeln('La persona no visitó la ciudad.').
+
+
+
