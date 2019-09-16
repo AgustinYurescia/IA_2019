@@ -1,0 +1,192 @@
+#------EJERCICIO 01------#
+
+menu:-
+    writeln('Ingrese una cadena de texto: '),
+    read(Cadena),
+    sub_atom(Cadena,0,1,_,Primer),
+    nl,
+    write('El primer caracter es: '),
+    writeln(Primer).
+    
+#------EJERCICIO 02------#
+
+menu:-
+    writeln('Ingrese una cadena de texto: '),
+    read(Cadena),
+    sub_atom(Cadena,_,1,0,Ultimo),
+    nl,
+    write('El último caracter es: '),
+    writeln(Ultimo).
+    
+#------EJERCICIO 03------#
+
+menu:-
+    writeln('Ingrese una cadena de texto: '),
+    read(Cadena),
+    atom_length(Cadena,Long),
+    nl,
+    write('La longitud de la cadena es: '),
+    writeln(Long).
+
+menu2:-
+    writeln('Ingrese una cadena de texto: '),
+    read(Cadena),
+    longitud(Cadena,Long),
+    nl,
+    write('La longitud de la cadena es: '),
+    writeln(Long).
+
+longitud('',0).
+longitud(Cadena,Long):-
+    sub_atom(Cadena,0,1,R,_),
+    sub_atom(Cadena,1,R,_,Sub),
+    longitud(Sub,L),
+    Long is L + 1.
+    
+#------EJERCICIO 04------#
+    
+menu:-
+    writeln('Ingrese una cadena de texto: '),
+    read(Cadena),
+    transformar(Cadena,Lista),
+    nl,
+    write('La cadena transformada en lista es: '),
+    writeln(Lista).
+
+transformar(Cadena,[H|T]):-
+    sub_atom(Cadena,0,1,_,H),
+    sub_atom(Cadena,1,_,0,Sub),
+    transformar(Sub,T).
+transformar('',[]).
+   
+    
+#------EJERCICIO 05------#
+    
+menu:-
+    writeln('Ingrese una cadena de texto: '),
+    read(Cadena),
+    transformar(Cadena,Lista),
+    nl,
+    write('La cadena transformada en lista es: '),
+    writeln(Lista).
+
+transformar(Cadena,[H|T]):-
+    sub_atom(Cadena,PosEspacio,_,_,' '),
+    sub_atom(Cadena,0,PosEspacio,_,H),
+    Pos is PosEspacio + 1,
+    sub_atom(Cadena,Pos,_,0,Sub),
+    transformar(Sub,T).
+transformar(Pos,[Pos]).    
+    
+#------EJERCICIO 06------#
+
+menu:-
+    write('Ingrese un número entero: '),
+    read(Numero),
+    Numero \= 0,
+    a_binario(Numero,SemiBinario),
+    reverse(SemiBinario,Binario),
+    nl,
+    write('El binario del numero ingresado es: '),
+    writeln(Binario).
+menu:-
+    nl,
+    writeln('El binario de 0 es 0.').
+
+
+a_binario(0,[]).
+a_binario(Numero,[H|T]):-
+    Numero \= 0,
+    Div is Numero // 2,
+    a_binario(Div,T),
+    H is Numero mod 2.
+
+#------EJERCICIO 07------#
+
+menu:-
+    write('Ingrese una cadena de texto: '),
+    read(Cadena),
+    write('Ingrese una palabra: '),
+    read(Palabra),
+    existe(Cadena,Palabra).
+
+existe(Cadena,Palabra):-
+    sub_atom(Cadena,PosEspacio,_,_,' '),
+    sub_atom(Cadena,0,PosEspacio,_,Palabra),
+    nl,
+    writeln('La palabra existe en la cadena.').
+existe(Cadena,Palabra):-
+    sub_atom(Cadena,PosEspacio,_,_,' '),
+    Pos is PosEspacio+1,
+    sub_atom(Cadena,Pos,_,0,Sub),
+    existe(Sub,Palabra).
+existe(Pos,Palabra):-
+    Pos = Palabra,
+    nl,
+    writeln('La palabra existe en la cadena').
+existe(_,_):-
+    nl,
+    writeln('La palabra no existe en la cadena').
+
+#------EJERCICIO 07------#
+
+menu:-
+    writeln('Ingrese una cadena de texto: '),
+    read(Cadena),
+    write('Ingrese un caracter: '),
+    read(C),
+    contar(Cadena,C,Cont),
+    nl,
+    write('La cantidad de veces que aparece el caracter en la cadena es: '),
+    writeln(Cont).
+
+contar('',_,0).
+contar(Cadena,C,Cont):-
+    sub_atom(Cadena,0,1,_,C),
+    sub_atom(Cadena,1,_,0,Sub),
+    contar(Sub,C,Con),
+    Cont is Con + 1.
+contar(Cadena,C,Cont):-
+    sub_atom(Cadena,1,_,0,Sub),
+    contar(Sub,C,Cont).
+
+#------EJERCICIO 09------#
+
+vocal(a).
+vocal(e).
+vocal(i).
+vocal(o).
+vocal(u).
+
+menu:-
+    writeln('Ingrese una cadena de texto: '),
+    read(Cadena),
+    contar(Cadena,ContV,ContC),
+    nl,
+    write('La cantidad de vocales es: '),
+    writeln(ContV),
+    write('La cantidad de consonantes es: '),
+    writeln(ContC).
+
+contar('',0,0).
+contar(Cadena,ContV,ContC):-
+    sub_atom(Cadena,0,1,_,C),
+    vocal(C),
+    sub_atom(Cadena,1,_,0,Sub),
+    contar(Sub,ConV,ContC),
+    ContV is ConV + 1.
+contar(Cadena,ContV,ContC):-
+    sub_atom(Cadena,0,1,_,C),
+    C \= ' ',
+    C \= '.',
+    C \= '¿',
+    C \= '?',
+    C \= '¡',
+    C \= '!',
+    C \= ':',
+    sub_atom(Cadena,1,_,0,Sub),
+    contar(Sub,ContV,ConC),
+    ContC is ConC + 1.
+contar(Cadena,ContV,ContC):-
+    sub_atom(Cadena,1,_,0,Sub),
+    contar(Sub,ContV,ContC).
