@@ -1,0 +1,128 @@
+#----------EJERCICIO 1----------#
+
+:-dynamic cuenta/4.
+
+abrir:-
+    consult('C:/Users/Agustin Yurescia/Desktop/Prolog/Practica 4/BaseEjercicio1.txt').
+
+guardar:-
+    tell('C:/Users/Agustin Yurescia/Desktop/Prolog/Practica 4/BaseEjercicio1.txt'),
+    listing(cuenta),
+    told.
+
+menu:-
+    nl,
+    writeln('##########Menu##########'),
+    writeln('0-Salir.'),
+    writeln('1-Ingresar nueva cuenta.'),
+    writeln('2-Buscar cuentas a pagar.'),
+    write('Seleccione una opcion:'),
+    read(OP),
+    OP \= 0,
+    opcion(OP),
+    menu.
+
+menu:-
+    nl,
+    writeln('Adios...').
+
+opcion(1):-
+    abrir,
+    nl,
+    write('Ingrese el nombre de la persona: '),
+    read(Nombre),
+    write('ingrese el tipo de gasto: '),
+    read(Tipo),
+    write('Ingrese el mes(nro): '),
+    read(Mes),
+    write('Ingrese el importe: '),
+    read(Importe),
+    assert(cuenta(Nombre,Tipo,Mes,Importe)),
+    guardar.
+
+opcion(2):-
+    abrir,
+    nl,
+    write('Ingrese el nombre de la persona: '),
+    read(Nombre),
+    nl,
+    write('#####Listado de cuentas a pagar por '),
+    write(Nombre),
+    writeln('#####'),
+    nl,
+    writeln('Tipo de impuesto - Mes - Importe'),
+    listar(Nombre).
+
+listar(Nombre):-
+    cuenta(Nombre,Tipo,Mes,Importe),
+    retract(cuenta(Nombre,Tipo,Mes,Importe)),
+    write(Tipo),
+    write(' - '),
+    write(Mes),
+    write(' - '),
+    writeln(Importe),
+    listar(Nombre).
+listar(_).
+
+#----------EJERCICIO 2----------#
+
+:-dynamic persona/2.
+
+abrir:-
+    consult('C:/Users/Agustin Yurescia/Desktop/Prolog/Practica 4/BaseEjercicio2.txt').
+
+guardar:-
+    tell('C:/Users/Agustin Yurescia/Desktop/Prolog/Practica 4/BaseEjercicio2.txt'),
+    listing(persona),
+    told.
+
+menu:-
+    nl,
+    writeln('##########Menu##########'),
+    write('Ingrese un ID: '),
+    read(ID),
+    buscar(ID),
+    nl,
+    write('¿Otro? [s/n]: '),
+    read(R),
+    R \= n,
+    menu.
+
+menu:-
+    nl,
+    writeln('Adios...').
+
+buscar(ID):-
+    abrir,
+    persona(ID,Persona),
+    retract(persona(ID,Persona)),
+    nl,
+    write('El ID ingresado corresponde a '),
+    writeln(Persona).
+buscar(ID):-
+    agregar(ID).
+
+agregar(ID):-
+    abrir,
+    nl,
+    writeln('El ID ingresado no existe.'),
+    write('Ingrese el nombre de la persona a la que quiere asignarlo: '),
+    read(Nombre),
+    assert(persona(ID,Nombre)),
+    guardar.
+
+#----------EJERCICIO 3----------#
+
+
+
+#----------EJERCICIO 4----------#
+
+
+
+
+#----------EJERCICIO 5----------#
+
+
+
+
+#----------EJERCICIO 6----------#
