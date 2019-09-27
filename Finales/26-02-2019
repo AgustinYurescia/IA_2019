@@ -1,0 +1,84 @@
+[IA] Final 26-02-2019 (Era repetido de uno del 2014)
+Practica: Dada la siguiente BD
+personas(Nombre, Edad, [Profesiones],Ciudad).
+cursos(Profesion, [Cursos]).
+personas_cursos(Nombre,Profesion,[CursosRealizados]).
+1) Ingresar una profesión (dato de entrada), y mostar la edad promedio de dicha profesion en la ciudad de Rosario.
+2) Ingresar una profesión (dato de entrada), y mostrar para cada persona, la lista de cursos que le faltan realizar.
+
+
+:-dynamic personas/4.
+:-dynamic cursos/2.
+
+abrir:-
+      consult('C:/Users/Agustin Yurescia/Desktop/26_02_2019.txt').
+
+#---------------EJERCICIO 1---------------#
+
+menu:-
+      abrir,
+      nl,
+      writeln('Ingrese una profesion: '),
+      read(P),
+      nl,
+      sumar_edades(P,Suma),
+      contar(P,Cont),
+      Promedio is Suma / Cont,
+      write('El promedio de edad es: '),
+      writeln(Promedio).
+
+existe(H,[H|_]).
+existe(H,[_|T]):-
+          existe(H,T).
+
+sumar_edades(P,Suma):-
+      personas(_,E,ciudad1,Prof),
+      retract(personas(_,E,ciudad1,Prof)),
+      existe(P,Prof),
+      sumar_edades(P,S),
+      Suma is S + E.
+sumar_edades(_,0):-abrir.
+
+
+contar(P,Cant):-
+      personas(_,_,ciudad1,Prof),
+      retract(personas(_,_,ciudad1,Prof)),
+      existe(P,Prof),
+      contar(P,C),
+      Cant is C + 1.
+contar(_,0):-abrir.
+
+#---------------EJERCICIO 2---------------#
+
+menu:-
+      abrir,
+      nl,
+      write('Ingresar Profesion:'),
+      read(P),
+      cursos(P,L),
+      comparar(P,L).
+
+comparar(P,Lt):-
+      retract(personas_cursos(N,P,Lr)),
+      faltante(Lt,Lr,Lp),
+      nl,
+      write(N),
+      write(': '),
+      writeln(Lp),
+      comparar(P,Lt).
+comparar(_,_).
+
+
+faltante([],_,[]).
+faltante([H|T],Lr,[H|T1]):-
+      noPertenece(H,Lr),
+      faltante(T,Lr,T1).
+faltante([_|T],Lr,Lp):-
+      faltante(T,Lr,Lp).
+
+noPertenece(X,[H|T]):-
+      X\=H,
+      noPertenece(X,T).
+noPertenece(_,[]).
+
+
