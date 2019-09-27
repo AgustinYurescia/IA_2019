@@ -1,0 +1,15 @@
+personas(nombre1,18,ciudad1,[p1,p2,p3]).
+personas(nombre2,19,ciudad2,[p1,p3]).
+personas(nombre3,20,ciudad1,[p3]).
+personas(nombre4,20,ciudad2,[p2,p3]).
+cursos(p1,[c1,c2]).
+cursos(p2,[c3,c4,c5]).
+cursos(p3,[c6,c7,c8]).
+personas_cursos(nombre1,p1,[c1]).
+personas_cursos(nombre1,p2,[c3,c4,c5]).
+personas_cursos(nombre1,p3,[c6,c7]).
+personas_cursos(nombre2,p1,[c1,c2]).
+personas_cursos(nombre2,p3,[c6,c7]).
+personas_cursos(nombre3,p3,[c6,c7,c8]).
+personas_cursos(nombre4,p2,[c3,c4]).
+personas_cursos(nombre4,p3,[c6,c7,c8]).
