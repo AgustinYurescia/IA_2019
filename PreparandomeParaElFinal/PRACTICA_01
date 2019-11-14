@@ -1,0 +1,232 @@
+#EJERCICIO 01#
+Es fácil, da una base de hechos y hay que ver lo que devuelve al realizar ciertas consultas. 
+
+#EJERCICIO 02#
+Teniendo la siguiente base de hechos, definir una regla que permita determinar quienes hablan el idioma inglés y francés.
+
+conoce(franco,ingles).
+conoce(renzo,ingles).
+conoce(franco,frances).
+conoce(renzo,frances).
+conoce(franco,italiano).
+conoce(marco,ingles).
+conoce(omar,ingles).
+conoce(maria,frances).
+
+habla_ingles_frances(ALGUIEN):-
+    conoce(ALGUIEN,ingles),
+    conoce(ALGUIEN,frances).
+
+#EJERCICIO 03#
+Escribir un programa Prolog que responda consultas acerca de cuáles son los rivales de una determinada selección en un campeonato mundial.
+Una selección tiene como rivales todos los otros equipos de su mismo grupo.
+Incluir en el programa la siguiente información:
+• El grupo 1 está formado por Brasil, España, Jamaica e Italia.
+• El grupo 2 está formado por Argentina, Nigeria, Holanda y Escocia.
+
+El programa debe ser capaz de responder a las siguientes consultas:
+a) ¿Son rivales Argentina y Brasil?
+b) ¿Cuáles son los rivales de un determinado equipo (por ejemplo
+Holanda)?
+
+grupo(1,brasil).
+grupo(1,españa).
+grupo(1,jamaica).
+grupo(1,italia).
+grupo(2,argentina).
+grupo(2,nigeria).
+grupo(2,holanda).
+grupo(2,escocia).
+
+rivales(EQUIPO,RIVAL):-
+    grupo(GRUPO,EQUIPO),
+    grupo(GRUPO,RIVAL),
+    EQUIPO \= RIVAL.
+    
+#EJERCICIO 04#
+Dados los siguientes predicados:
+  hombre(unHombre).
+  mujer(unaMujer).
+  padres(persona, madre, padre).
+  
+  a. Construya una base de hechos con los miembros de su familia.
+  b. Defina las siguientes reglas:
+    • hermana/2, donde hermana(A,B) significa que A es hermana de B.
+    • nieto/2, donde nieto(A,B) significa que A es el nieto de B. 
+    • abuelo/2, donde abuelo(A,B) significa que A es el abuelo de B.
+    • tia/2, donde tia(A,B) significa que A es la tía de B. Esta regla definirla, en una primera instancia, valiéndose sólo de los 
+    hechos disponibles. En una segunda instancia, valiéndose de alguna otra regla que pudieron haber definido previamente.
+    
+ hombre(juan).
+ hombre(fabian).
+ hombre(federico).
+ hombre(agustin).
+ hombre(facundo).
+ hombre(martin).
+ hombre(ruben).
+ mujer(anabela).
+ mujer(martha).
+ mujer(angela).
+ mujer(belen).
+ padres(agustin,angela,fabian).
+ padres(federico,angela,fabian).
+ padres(fabian,martha,juan).
+ padres(anabela,martha,juan).
+ padres(facundo,anabela,ruben).
+ padres(martin,anabela,ruben).
+ padres(belen,anabela,ruben).
+ 
+ hermana(A,B):-
+    A \= B,
+    mujer(A),
+    padres(A,MAMA,PAPA),
+    padres(B,MAMA,PAPA).
+
+nieto(A,B):-
+    hombre(A),
+    padres(A,MAMA,_),
+    padres(MAMA,B,_).
+nieto(A,B):-
+    hombre(A),
+    padres(A,MAMA,_),
+    padres(MAMA,_,B).
+nieto(A,B):-
+    hombre(A),
+    padres(A,_,PAPA),
+    padres(PAPA,B,_).
+nieto(A,B):-
+    hombre(A),
+    padres(A,_,PAPA),
+    padres(PAPA,_,B).
+    
+abuelo(A,B):-
+    hombre(A),
+    padres(B,MAMA,_),
+    padres(MAMA,_,A).
+abuelo(A,B):-
+    hombre(A),
+    padres(B,_,PAPA),
+    padres(PAPA,_,A).
+ 
+tia(A,B):-
+    padres(B,MAMA,_),
+    hermana(A,MAMA).
+tia(A,B):-
+    padres(B,_,PAPA),
+    hermana(A,PAPA).
+
+#EJERCICIO 05#
+Dada la siguiente base de hechos:
+  %auto(patente,propietario)
+    auto(hti687,pedro).
+    auto(jug144,juan).
+    auto(gqm758,pedro).
+    auto(lod445,carlos).
+    auto(lfz569,miguel).
+    auto(axk798,maria).
+  % deuda(patente, monto adeudado)
+    deuda(lfz569,2000).
+    deuda(gqm758,15000).
+    deuda(axk798,1000).
+Escriba una regla que permita determinar si una persona (dato entrada) tiene algún auto con deuda.
+
+tiene_deuda(PERSONA):-
+    auto(PATENTE,PERSONA),
+    deuda(PATENTE,_).
+
+#EJERCICIO 06#
+Escribir un programa Prolog que ayude a un organizador a armar un festival, considerando las diferentes bandas de música que se pueden
+formar en cada ciudad. Para formar una banda son necesarios un guitarrista, un cantante y un baterista. Se dispone de la siguiente 
+información:
+  • Carolina y José son guitarristas y viven en Rosario.
+  • Miguel es guitarrista y vive en Funes.
+  • Mariano es un cantante que vive en Rosario.
+  • Silvia es una cantante que vive en Funes.
+  • Eduardo es un baterista que vive en Roldán.
+  • Diego es un baterista que vive en Casilda.
+  • Laura es una baterista que vive en Rosario.
+  • Mauro es cantante y vive en Funes.
+El programa debe responder si en una ciudad (dato de entrada), se puede o no formar una banda.
+
+musico(carolina,guitarrista,rosario).
+musico(jose,guitarrista,rosario).
+musico(mariano,cantante,rosario).
+musico(laura,baterista,rosario).
+musico(miguel,guitarrista,funes).
+musico(silvia,cantante,funes).
+musico(mauro,cantante,funes).
+musico(eduardo,baterista,roldan).
+musico(diego,baterista,casilda).
+
+se_puede_formar_banda(CIUDAD):-
+    musico(_,cantante,CIUDAD),
+    musico(_,baterista,CIUDAD),
+    musico(_,guitarrista,CIUDAD).
+
+#EJERCICIO 07#
+menu:-
+    writeln('1-Suma'),
+    writeln('2-Resta'),
+    writeln('3-Multiplicación'),
+    writeln('4-División'),
+    writeln('5-Salir'),
+    write('Elija una opción: '),
+    readln(OPCION),
+    OPCION \= 5,
+    seleccion(OPCION),
+    menu.
+
+menu:-
+    nl,
+    writeln('GRACIAS, ADIÓS').
+
+seleccion(1):-
+    nl,
+    write('Ingrese el primer número: '),
+    readln(N1),
+    write('Ingrese el segundo número: '),
+    readln(N2),
+    SUMA is N1 + N2,
+    write('La suma es: '),
+    writeln(SUMA).
+    
+seleccion(2):-
+    nl,
+    write('Ingrese el primer número: '),
+    readln(N1),
+    write('Ingrese el segundo número: '),
+    readln(N2),
+    RESTA is N1 - N2,
+    write('La resta es: '),
+    writeln(RESTA).
+
+seleccion(3):-
+    nl,
+    write('Ingrese el primer número: '),
+    readln(N1),
+    write('Ingrese el segundo número: '),
+    readln(N2),
+    MULT is N1 * N2,
+    write('La multiplicación es: '),
+    writeln(MULT).
+
+seleccion(4):-
+    nl,
+    write('Ingrese el primer número: '),
+    readln(N1),
+    write('Ingrese el segundo número: '),
+    readln(N2),
+    DIV is N1 / N2,
+    write('La división es: '),
+    writeln(DIV).
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
