@@ -171,7 +171,7 @@ menu:-
     writeln('4-División'),
     writeln('5-Salir'),
     write('Elija una opción: '),
-    readln(OPCION),
+    read(OPCION),
     OPCION \= 5,
     seleccion(OPCION),
     menu.
@@ -183,9 +183,9 @@ menu:-
 seleccion(1):-
     nl,
     write('Ingrese el primer número: '),
-    readln(N1),
+    read(N1),
     write('Ingrese el segundo número: '),
-    readln(N2),
+    read(N2),
     SUMA is N1 + N2,
     write('La suma es: '),
     writeln(SUMA).
@@ -193,9 +193,9 @@ seleccion(1):-
 seleccion(2):-
     nl,
     write('Ingrese el primer número: '),
-    readln(N1),
+    read(N1),
     write('Ingrese el segundo número: '),
-    readln(N2),
+    read(N2),
     RESTA is N1 - N2,
     write('La resta es: '),
     writeln(RESTA).
@@ -203,9 +203,9 @@ seleccion(2):-
 seleccion(3):-
     nl,
     write('Ingrese el primer número: '),
-    readln(N1),
+    read(N1),
     write('Ingrese el segundo número: '),
-    readln(N2),
+    read(N2),
     MULT is N1 * N2,
     write('La multiplicación es: '),
     writeln(MULT).
@@ -213,9 +213,9 @@ seleccion(3):-
 seleccion(4):-
     nl,
     write('Ingrese el primer número: '),
-    readln(N1),
+    read(N1),
     write('Ingrese el segundo número: '),
-    readln(N2),
+    read(N2),
     DIV is N1 / N2,
     write('La división es: '),
     writeln(DIV).
