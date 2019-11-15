@@ -220,12 +220,56 @@ seleccion(4):-
     write('La división es: '),
     writeln(DIV).
     
-    
-    
-    
-    
-    
-    
+#EJERCICIO 08#
+Dada la siguiente estructura de hechos:
+    horoscopo(Signo,DiaInicio,MesIni,DiaFin,MesFin).
+Por ejemplo:
+    horoscopo(aries,21,3,20,4).
+    horoscopo(tauro,21,4,21,5).
+    horoscopo(geminis,22,5,21,6).
+Definir una regla del estilo signo(Dia, Mes, Signo) que permita:
+    a. Ingresar un signo, día y mes y me informe si es correcto ese signo para esa fecha.
+        Ejemplo:
+            ?-signo(3,5,tauro).
+            ?-signo(23,4,aries).
+    b. Ingresar una fecha (día y mes) y me informe de qué signo soy.
+        Ejemplo:
+            ?-signo(16,12,Signo).
+            ?-signo(7,4,Signo).
+
+#EJERCICIO 9#
+Se tiene la siguiente base de hechos:
+    hijo(juan,miguel).
+    hijo(jose,miguel).
+    hijo(miguel,roberto).
+    hijo(julio,roberto).
+    hijo(roberto,carlos).
+Donde hijo(X,Y) indica que X es hijo de Y.
+Definir la regla descendiente(A,B), la cual permite determinar si A esdescendiente de B.
+
+#EJERCICIO 10#
+Dada la siguiente red de tareas de un proyecto:
+
+Definir la regla requiere_de(X,Y), la cual permite saber si para la ejecución de la tarea Y se requiere tener finalizada la tarea X.
+
+#EJERCICIO 11#
+Hacer un programa para calcular el factorial de un número.
+    factorial(N,Fact).
+        . N es el número ingresado (argumento de entrada).
+        . Fact es el resultado calculado (argumento de salida).
+
+#EJERCICIO 12#
+Hacer un programa que permita ingresar un número y calcule su sumatoria, es decir, la suma de sus términos descontados en una unidad
+hasta llegar a cero. Por ejemplo, si el número ingresado fuera 5, se deberá calcular la sumatoria 5+4+3+2+1 e informar como resultado 15.
+suma(N,Sum).
+
+#EJERCICIO 13#
+Hacer un programa que permita ingresar un número y calcule la sumatoria de sus términos descontados en una unidad (hasta llegar a cero)
+pares e impares.
+    suma(N,SumPares,SumImpares).
+        . N es el número ingresado (argumento de entrada).
+        . SumPares es uno de los resultados calculados (argumento de salida).
+        . SumImpares es uno de los resultados calculados (argumento de salida).
     
     
     
