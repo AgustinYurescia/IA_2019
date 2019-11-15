@@ -237,6 +237,29 @@ Definir una regla del estilo signo(Dia, Mes, Signo) que permita:
             ?-signo(16,12,Signo).
             ?-signo(7,4,Signo).
 
+horoscopo(aries,21,3,20,4).
+horoscopo(tauro,21,4,20,5).
+horoscopo(geminis,21,5,24,6).
+horoscopo(cancer,25,6,22,7).
+horoscopo(leo,23,7,23,8).
+horoscopo(virgo,24,8,23,9).
+horoscopo(libra,24,9,22,10).
+horoscopo(escorpio,23,10,22,11).
+horoscopo(sagitario,23,11,21,12).
+horoscopo(capricornio,22,12,19,1).
+horoscopo(acuarius,20,1,18,2).
+horoscopo(piscis,19,2,20,3).
+
+signo(DIA,MES,SIGNO):-
+    horoscopo(SIGNO,DIAIN,MESIN,_,_),
+    DIA >= DIAIN,
+    MES = MESIN.
+
+signo(DIA,MES,SIGNO):-
+    horoscopo(SIGNO,_,_,DIAFIN,MESFIN),
+    DIA =< DIAFIN,
+    MES = MESFIN.
+
 #EJERCICIO 9#
 Se tiene la siguiente base de hechos:
     hijo(juan,miguel).
