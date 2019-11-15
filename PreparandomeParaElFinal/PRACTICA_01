@@ -253,12 +253,12 @@ horoscopo(piscis,19,2,20,3).
 signo(DIA,MES,SIGNO):-
     horoscopo(SIGNO,DIAIN,MESIN,_,_),
     DIA >= DIAIN,
-    MES = MESIN.
+    MES == MESIN.
 
 signo(DIA,MES,SIGNO):-
     horoscopo(SIGNO,_,_,DIAFIN,MESFIN),
     DIA =< DIAFIN,
-    MES = MESFIN.
+    MES == MESFIN.
 
 #EJERCICIO 9#
 Se tiene la siguiente base de hechos:
