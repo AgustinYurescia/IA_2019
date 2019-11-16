@@ -1,0 +1,351 @@
+#EJERCICIO 01#
+Ingresar una lista de elementos y mostrarla por pantalla.
+
+menu:-
+  write('Ingrese una lista (con [] finaliza): '),
+  leer(LISTA),
+  nl,
+  write('La lista ingresada es: '),
+  writeln(LISTA).
+ 
+leer([H|T]):-
+  read(H),
+  H \= [],
+  leer(T).
+leer([]).
+
+#EJERCICIO 02#
+Ingresar una lista de elementos y mostrar su cabeza y su cola.
+
+menu:-
+  write('Ingrese una lista (con [] finaliza): '),
+  leer([H|T]),
+  nl,
+  write('La cabeza de la lista ingresada es: '),
+  writeln(H),
+  write('La cola de la lista ingresada es: '),
+  writeln(T).
+ 
+leer([H|T]):-
+  read(H),
+  H \= [],
+  leer(T).
+leer([]).
+
+#EJERCICIO 03#
+Ingresar una lista de elementos y mostrar su primer elemento.
+
+menu:-
+  write('Ingrese una lista (con [] finaliza): '),
+  leer([H|T]),
+  nl,
+  write('El primer elemento de la lista ingresada es: '),
+  writeln(H).
+ 
+leer([H|T]):-
+  read(H),
+  H \= [],
+  leer(T).
+leer([]).
+
+#EJERCICIO 04#
+Ingresar una lista de elementos y mostrar sus dos primeros elementos.
+
+menu:-
+  write('Ingrese una lista (con [] finaliza): '),
+  leer([H|[HT|_]]),
+  nl,
+  write('El primer elemento de la lista ingresada es: '),
+  writeln(H),
+  write('El segundo elemento de la lista ingresada es: '),
+  writeln(HT).
+ 
+leer([H|T]):-
+  read(H),
+  H \= [],
+  leer(T).
+leer([]).
+
+#EJERCICIO 05#
+Ingresar una lista de elementos y mostrar su último elemento.
+
+menu:-
+  write('Ingrese una lista (con [] finaliza): '),
+  leer(LISTA),
+  nl,
+  obtener_ultimo(LISTA,ULTIMO),
+  write('El ultimo elemento de la lista ingresada es: '),
+  writeln(ULTIMO).
+ 
+leer([H|T]):-
+  read(H),
+  H \= [],
+  leer(T).
+leer([]).
+
+obtener_ultimo([ULTIMO|[]],ULTIMO).
+obtener_ultimo([_|T],ULTIMO):-
+  obtener_ultimo(T,ULTIMO).
+
+#EJERCICIO 06#
+Ingresar una lista de números enteros y calcular la diferencia entre el primero y el último de ellos.
+
+menu:-
+  write('Ingrese una lista de números enteros (con [] finaliza): '),
+  leer([H|T]),
+  nl,
+  obtener_ultimo(T,ULTIMO),
+  RESTA is H - ULTIMO,
+  write('La diferencia entre el primer y el ultimo número de la lista ingresada es: '),
+  writeln(RESTA).
+ 
+leer([H|T]):-
+  read(H),
+  H \= [],
+  leer(T).
+leer([]).
+
+obtener_ultimo([ULTIMO|[]],ULTIMO).
+obtener_ultimo([_|T],ULTIMO):-
+  obtener_ultimo(T,ULTIMO).
+
+#EJERCICIO 07#
+Ingresar una lista de elementos e informar cuántos elementos tiene.
+
+menu:-
+  write('Ingrese una lista de elementos (con [] finaliza): '),
+  leer(LISTA),
+  nl,
+  contar(LISTA,CONTADOR),
+  write('La cantidad de elementos ingresados en la lista es: '),
+  writeln(CONTADOR).
+ 
+leer([H|T]):-
+  read(H),
+  H \= [],
+  leer(T).
+leer([]).
+
+contar([],0).
+contar([_|T],CONTADOR):-
+  contar(T,CONT),
+  CONTADOR is CONT + 1.
+
+#EJERCICIO 08#
+Ingresar una lista de números enteros e informar cuánto da la sumatoria de ellos.
+
+menu:-
+  write('Ingrese una lista de números enteros (con [] finaliza): '),
+  leer(LISTA),
+  nl,
+  sumar(LISTA,SUMATORIA),
+  write('La sumatoria de los elementos ingresados en la lista es: '),
+  writeln(SUMATORIA).
+ 
+leer([H|T]):-
+  read(H),
+  H \= [],
+  leer(T).
+leer([]).
+
+sumar([],0).
+sumar([H|T],SUMATORIA):-
+  sumar(T,SUM),
+  SUMATORIA is SUM + H.
+
+
+#EJERCICIO 09#
+Ingresar una lista de números enteros y calcular su promedio. Respetar el formato del predicado promedio(L,S,C) donde L es la lista 
+ingresada, S la sumatoria y C el contador de los elementos de la lista.
+
+menu:-
+  write('Ingrese una lista de números enteros (con [] finaliza): '),
+  leer(LISTA),
+  nl,
+  promedio(LISTA,SUMATORIA,CONTADOR),
+  PROMEDIO is SUMATORIA / CONTADOR,
+  write('El promedio de los elementos ingresados en la lista es: '),
+  writeln(PROMEDIO).
+ 
+leer([H|T]):-
+  read(H),
+  H \= [],
+  leer(T).
+leer([]).
+
+promedio([],0,0).
+promedio([H|T],SUMATORIA,CONTADOR):-
+  promedio(T,SUM,CONT),
+  SUMATORIA is SUM + H,
+  CONTADOR is CONT + 1.
+
+#EJERCICIO 10#
+Ingresar una lista y un elemento e informar si ese elemento está en la lista.
+
+menu:-
+  write('Ingrese una lista de elementos (con [] finaliza): '),
+  leer(LISTA),
+  nl,
+  write('Ingrese un elemento: '),
+  read(ELEMENTO),
+  existe(LISTA,ELEMENTO).
+  
+leer([H|T]):-
+  read(H),
+  H \= [],
+  leer(T).
+leer([]).
+
+existe([],ELEMENTO):-
+  nl,
+  write('El elemeto '),
+  write(ELEMENTO),
+  writeln(' no existe en la lista.').
+existe([H|T],ELEMENTO):-
+  H \= ELEMENTO,
+  existe(T,ELEMENTO).
+existe(_,ELEMENTO):-
+  nl,
+  write('El elemeto '),
+  write(ELEMENTO),
+  writeln(' existe en la lista.').
+  
+#EJERCICIO 11#
+Ingresar una lista de enteros e informar cuál es el mayor de todos los números.
+
+menu:-
+  write('Ingrese una lista de números enteros (con [] finaliza): '),
+  leer(LISTA),
+  nl,
+  mayor(LISTA,0,MAYOR),
+  write('El mayor de los elementos ingresados en la lista es: '),
+  writeln(MAYOR).
+
+leer([H|T]):-
+  read(H),
+  H \= [],
+  leer(T).
+leer([]).
+
+mayor([],MAYOR,MAYOR).
+mayor([H|T],MAYOR,MAY):-
+  H >= MAYOR,
+  mayor(T,H,MAY).
+mayor([_|T],MAYOR,MAY):-
+  mayor(T,MAYOR,MAY).
+
+#EJERCICIO 12#
+Ingresar una lista de enteros e informar cuál es el menor de todos los números.
+
+menu:-
+  write('Ingrese una lista de números enteros (con [] finaliza): '),
+  leer(LISTA),
+  nl,
+  menor(LISTA,9999999,MENOR),
+  write('El menor de los elementos ingresados en la lista es: '),
+  writeln(MENOR).
+
+leer([H|T]):-
+  read(H),
+  H \= [],
+  leer(T).
+leer([]).
+
+menor([],MENOR,MENOR).
+menor([H|T],MENOR,MEN):-
+  H =< MENOR,
+  menor(T,H,MEN).
+menor([_|T],MENOR,MEN):-
+  menor(T,MENOR,MEN).
+
+#EJERCICIO 13#
+Ingresar dos listas de elementos, concatenarlas (los elementos deben ser asignados de a uno en la lista de salida) y mostrarlas en una
+tercera.
+
+menu:-
+  write('Ingrese una lista (con [] finaliza): '),
+  leer(LISTA1),
+  nl,
+  write('Ingrese otra lista (con [] finaliza): '),
+  leer(LISTA2),
+  nl,
+  concatenar(LISTA1,LISTA2,CONCATENADAS),
+  write('Las listas concatenadas quedan: '),
+  writeln(CONCATENADAS).
+
+leer([H|T]):-
+  read(H),
+  H \= [],
+  leer(T).
+leer([]).
+
+concatenar([],[],[]).
+concatenar([H1|T1],LISTA2,[H1|TC]):-
+  concatenar(T1,LISTA2,TC).
+concatenar([],[H2|T2],[H2|TC]):-
+  concatenar([],T2,TC).
+
+#EJERCICIO 14#
+Ingresar una lista y determinar el primer elemento que se repite.
+
+menu:-
+  write('Ingrese una lista (con [] finaliza): '),
+  leer(LISTA),
+  nl,
+  primer_repetido(LISTA).
+
+leer([H|T]):-
+  read(H),
+  H \= [],
+  leer(T).
+leer([]).
+
+primer_repetido([]):-
+  nl,
+  writeln('La lista no tiene elementos repetidos').
+primer_repetido([H|T]):-
+  existe(T,H),
+  nl,
+  write('El primer elemento que se repite es: '),
+  writeln(H).
+primer_repetido([_|T]):-
+  primer_repetido(T).
+
+existe([H|_],H).
+existe([_|T],H):-
+  existe(T,H).
+
+#EJERCICIO 15#
+Ingresar una lista y determinar a través de una segunda lista todos los elementos que se repiten.
+
+menu:-
+  write('Ingrese una lista (con [] finaliza): '),
+  leer(LISTA),
+  nl,
+  repetidos(LISTA,REPETIDOS),
+  write('Los elementos que se repiten son: '),
+  writeln(REPETIDOS).
+
+leer([H|T]):-
+  read(H),
+  H \= [],
+  leer(T).
+leer([]).
+
+repetidos([H|T],[H|TR]):-
+  existe(T,H),
+  repetidos(T,TR).
+repetidos([_|T],TR):-
+  repetidos(T,TR).
+
+existe([H|_],H).
+existe([_|T],H):-
+  existe(T,H).
+
+#EJERCICIO 16#
+Ingresar una lista y un elemento e informar cuántas veces está ese elemento en la lista.
+
+#EJERCICIO 17#
+En una base de hechos hay un registro de personas y viajes realizados:
+  persona(nombre, [lista ciudades visitó])
+Construir una regla que permita verificar si una persona visitó una  determinada ciudad (datos de entrada: nombre persona y ciudad).
