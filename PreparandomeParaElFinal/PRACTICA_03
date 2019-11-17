@@ -1,0 +1,152 @@
+#EJERCICIO 01#
+Ingresar una cadena de texto y obtener el primer carácter de la misma.
+
+menu:-
+    write('Ingrese una cadena de texto: '),
+    read(CADENA),
+    sub_atom(CADENA,0,1,_,PRIMER),
+    write('El primer caracter de la cadena es: '),
+    writeln(PRIMER).
+
+#EJERCICIO 02#
+Ingresar una cadena de texto y obtener el último carácter de la misma.
+
+menu:-
+    write('Ingrese una cadena de texto: '),
+    read(CADENA),
+    sub_atom(CADENA,_,1,0,ULTIMO),
+    write('El ultimo caracter de la cadena es: '),
+    writeln(ULTIMO).
+
+#EJERCICIO 03#
+Ingresar una cadena de texto e informar cuántos caracteres tiene. En primer lugar haciendo uso del predicado atom_length/2 y en una
+segunda instancia sin hacer uso de dicho predicado.
+
+menu:-
+    write('Ingrese una cadena de texto: '),
+    read(CADENA),
+    obtener_longitud_length(CADENA,LONGITUD),
+    obtener_longitud(CADENA,LONGITUD2),
+    write('La longitud de la cadena usando length es: '),
+    writeln(LONGITUD),
+    write('La longitud de la cadena sin usar length es: '),
+    writeln(LONGITUD2).
+
+obtener_longitud_length(CADENA,LONGITUD):-
+    atom_length(CADENA,LONGITUD).
+
+obtener_longitud('',0).
+obtener_longitud(CADENA,LONGITUD2):-
+    sub_atom(CADENA,0,1,R,_),
+    sub_atom(CADENA,1,R,_,SUB),
+    obtener_longitud(SUB,LONG),
+    LONGITUD2 is LONG + 1.
+    
+#EJERCICIO 04#
+Transformar una cadena en una lista de caracteres.
+
+menu:-
+    write('Ingrese una cadena de texto: '),
+    read(CADENA),
+    transformar(CADENA,LISTA),
+    write('La cadena transformada en lista es: '),
+    writeln(LISTA).
+
+transformar('',[]).
+transformar(CADENA,[H|T]):-
+    sub_atom(CADENA,0,1,R,H),
+    sub_atom(CADENA,1,R,_,SUBCADENA),
+    transformar(SUBCADENA,T).
+
+#EJERCICIO 05#
+Transformar una cadena de texto en una lista de palabras, tomando como divisor el espacio.
+
+menu:-
+    write('Ingrese una cadena de texto: '),
+    read(CADENA),
+    transformar(CADENA,LISTA),
+    write('La cadena transformada en lista de palabras es: '),
+    writeln(LISTA).
+
+transformar(CADENA,[H|T]):-
+    sub_atom(CADENA,POSESPACIO,_,_,' '),
+    sub_atom(CADENA,0,POSESPACIO,_,H),
+    POS is POSESPACIO + 1,
+    sub_atom(CADENA,POS,_,0,SUBCADENA),
+    transformar(SUBCADENA,T).
+transformar(POS,[POS]).
+
+#EJERCICIO 06#
+Hacer un programa que transforme un número entero a binario.
+
+
+#EJERCICIO 07#
+Hacer un reconocedor de palabras de la forma anbn.
+
+
+#EJERCICIO 08#
+Ingresar una cadena y un carácter, luego informar la cantidad de veces que aparece dicho carácter en la cadena.
+
+menu:-
+    write('Ingrese una cadena de texto: '),
+    read(CADENA),
+    write('Ingrese un caracter'),
+    read(CARACTER),
+    contar(CADENA,CARACTER,CONTADOR),
+    write('La cantidad de veces que aparece el caracter en la cadena es: '),
+    writeln(CONTADOR).
+
+contar('',_,0).
+contar(CADENA,CARACTER,CONTADOR):-
+    sub_atom(CADENA,0,1,R,CARACTER),
+    sub_atom(CADENA,1,R,_,SUBCADENA),
+    contar(SUBCADENA,CARACTER,CONT),
+    CONTADOR is CONT + 1.
+contar(CADENA,CARACTER,CONTADOR):-
+    sub_atom(CADENA,0,1,_,_),
+    sub_atom(CADENA,1,_,0,SUB),
+    contar(SUB,CARACTER,CONTADOR).
+
+#EJERCICIO 09#
+Ingresar una cadena, contar e informar el número de veces que aparece cada una de las vocales (a, e, i, o, u) y la cantidad de veces que
+aparece cualquier consonante.
+
+vocal('a').
+vocal('e').
+vocal('i').
+vocal('o').
+vocal('u').
+
+menu:-
+    write('Ingrese una cadena de texto: '),
+    read(CADENA),
+    contar(CADENA,VOCALES,CONSONANTES),
+    write('La cantidad de veces que aparecen vocales en la cadena es: '),
+    writeln(VOCALES),
+    write('La cantidad de veces que aparecen consonantes en la cadena es: '),
+    writeln(CONSONANTES).
+
+
+contar('',0,0).
+contar(CADENA,VOCALES,CONSONANTES):-
+    sub_atom(CADENA,0,1,R,CARACTER),
+    sub_atom(CADENA,1,R,_,SUBCADENA),
+    vocal(CARACTER),
+    contar(SUBCADENA,VOC,CONSONANTES),
+    VOCALES is VOC + 1.
+contar(CADENA,VOCALES,CONSONANTES):-
+    sub_atom(CADENA,0,1,_,CARACTER),
+    sub_atom(CADENA,1,_,0,SUB),
+    CARACTER \= ' ',
+    CARACTER \= '¿',
+    CARACTER \= '?',
+    CARACTER \= '-',
+    CARACTER \= '!',
+    CARACTER \= '¡',
+    contar(SUB,VOCALES,CON),
+    CONSONANTES is CON +1.
+contar(CADENA,VOCALES,CONSONANTES):-
+    sub_atom(CADENA,0,1,_,_),
+    sub_atom(CADENA,1,_,0,SUB),
+    contar(SUB,VOCALES,CONSONANTES).
+
