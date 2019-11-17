@@ -345,7 +345,62 @@ existe([_|T],H):-
 #EJERCICIO 16#
 Ingresar una lista y un elemento e informar cuántas veces está ese elemento en la lista.
 
+menu:-
+  write('Ingrese una lista (con [] finaliza): '),
+  leer(LISTA),
+  nl,
+  write('Ingrese un elemento: '),
+  read(ELEMENTO),
+  nl,
+  contar(LISTA,ELEMENTO,CONTADOR),
+  write('El elemento '),
+  write(ELEMENTO),
+  write(' aparece '),
+  write(CONTADOR),
+  writeln(' veces en la lista.').
+
+leer([H|T]):-
+  read(H),
+  H \= [],
+  leer(T).
+leer([]).
+
+contar([],_,0).
+contar([H|T],ELEMENTO,CONTADOR):-
+  H = ELEMENTO,
+  contar(T,ELEMENTO,CONT),
+  CONTADOR is CONT + 1.
+contar([_|T],ELEMENTO,CONTADOR):-
+  contar(T,ELEMENTO,CONTADOR).
+
 #EJERCICIO 17#
 En una base de hechos hay un registro de personas y viajes realizados:
   persona(nombre, [lista ciudades visitó])
 Construir una regla que permita verificar si una persona visitó una  determinada ciudad (datos de entrada: nombre persona y ciudad).
+
+persona(agustin,[vedia,salta,rosario,sn,junin]).
+persona(juan,[vedia,junin,pehuajo]).
+persona(sasha,[sn,vedia,mdq]).
+persona(roberto,[vedia,junin,sanluis]).
+
+menu:-
+  write('Ingrese el nombre de la persona: '),
+  read(PERSONA),
+  nl,
+  write('Ingrese una ciudad: '),
+  read(CIUDAD),
+  nl,
+  visito(PERSONA,CIUDAD).
+
+visito(PERSONA,CIUDAD):-
+  persona(PERSONA,CIUDADES),
+  existe(CIUDAD,CIUDADES).
+
+existe(_,[]):-
+  nl,
+  writeln('La persona no visitó la ciudad.').
+existe(CIUDAD,[CIUDAD|_]):-
+  nl,
+  writeln('La persona visitó la ciudad ingresada').
+existe(CIUDAD,[_|T]):-
+  existe(CIUDAD,T).
