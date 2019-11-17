@@ -1,0 +1,403 @@
+#EJERCICIO 1#
+Hacer un programa que permita definir las cuentas a pagar del mes (luz, agua, alquiler, teléfono, cable, supermercado, etc.) de un grupo de
+personas. A su vez, deberá permitir ingresar el nombre de una de ellas e informar de todos sus gastos.
+
+#BASE DE DATOS#
+%cuenta(PERSONA,TIPO_IMPUESTO,VALOR,NRO_MES).
+cuenta(agustin,luz,2500,10).
+cuenta(agustin,agua,1000,10).
+cuenta(agustin,gas,1200,10).
+cuenta(juan,agua,900,10).
+cuenta(juan,luz,3000,10).
+cuenta(ricardo,expensas,1500,10).
+cuenta(ricardo,telefono,700,10).
+cuenta(ricardo,canal,3000,10).
+
+#CÓDIGO DEL PROGRAMA#
+:-dynamic cuenta/4.
+
+abrir:-
+    consult('./BaseDatos.txt').
+
+guardar:-
+    tell('./BaseDatos.txt'),
+    listing(cuenta),
+    told.
+    
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Cargar nueva cuenta'),
+    writeln('2-Consultar cuentas de una persona'),
+    write('Seleccione una opción: '),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+    nl,
+    writeln('Gracias, adiós').
+
+seleccion(1):-
+    nl,
+    abrir,
+    write('Ingrese el nombre de la persona: '),
+    read(NOMBRE),
+    write('Ingrese el nombre del impuesto: '),
+    read(IMPUESTO),
+    write('Ingrese el monto: '),
+    read(MONTO),
+    write('Ingrese el número del mes: '),
+    read(MES),
+    assert(cuenta(NOMBRE,IMPUESTO,MONTO,MES)),
+    guardar.
+
+seleccion(2):-
+    nl,
+    abrir,
+    write('Ingrese el nombre de la persona: '),
+    read(NOMBRE),
+    listar(NOMBRE).
+
+listar(NOMBRE):-
+    nl,
+    cuenta(NOMBRE,IMPUESTO,MONTO,MES),
+    retract(cuenta(NOMBRE,IMPUESTO,MONTO,MES)),
+    write('IMPUESTO: '),
+    write(IMPUESTO),
+    write(' - MONTO: '),
+    write(MONTO),
+    write(' - MES: '),
+    write(MES),
+    listar(NOMBRE).
+listar(_).
+    
+#EJERCICIO 2#
+Hacer un programa que defina una Base de datos de personas de la siguiente forma:
+    personas(codigo,nombre).
+El programa debe permitir ingresar un código y verificar si el mismo está definido en la BBDD. De estarlo deberá informar a quién 
+corresponde, de lo contrario deberá solicitar ingresar un nombre y registrar entonces la persona en la BBDD.
+
+#BASE DE DATOS#
+%personas(CODIGO,NOMBRE).
+personas(1,agustin).
+personas(2,juan).
+personas(3,ricardo).
+
+#CODIGO DEL PROGRAMA#
+
+:-dynamic personas/2.
+
+abrir:-
+    consult('./BaseDatos.txt').
+
+guardar:-
+    tell('./BaseDatos.txt'),
+    listing(personas),
+    told.
+
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Buscar persona'),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+    nl,
+    writeln('Gracias, adios...').
+    
+seleccion(1):-
+    abrir,
+    nl,
+    write('Ingrese el id de la persona: '),
+    read(ID),
+    buscar(ID).
+    
+buscar(ID):-
+    personas(ID,PERSONA),
+    retract(personas(ID,PERSONA)),
+    nl,
+    write('El id ingresado pertenece a: '),
+    writeln(PERSONA).
+buscar(ID):-
+    nl,
+    writeln('El id ingresado no existe.'),
+    write('Ingrese la persona a la que quiera asignarlo: '),
+    read(PERSONA),
+    assert(personas(ID,PERSONA)),
+    guardar,
+    nl,
+    writeln('La persona ha sido guardada con éxito.').
+
+#EJERCICIO 3#
+Desarrollar un programa que permita definir los hábitos de:
+    • alimentación (comida, cantidad)
+    • bebida (bebida, cantidad)
+    • reproducción (época de reproducción, período de gestación)
+    • horas de sueño
+
+de un conjunto de animales de un Zoo. Dicha información se guardará en una base de datos. El programa, deberá permitir:
+    a. Ingresar el nombre de un animal e informar de todos sus hábitos.
+    b. Ingresar un hábito e informar todos los animales que lo tienen.
+    
+#DASE DE DATOS#
+habitos(leon,alimentacion(carne,10)).
+habitos(leon,bebida(agua,20)).
+habitos(leon,descanso(8)).
+habitos(tigre,alimentacion(carne,12)).
+habitos(tigre,bebida(agua,22)).
+habitos(tigre,descanso(12)).
+habitos(mono,alimentacion(banana,6)).
+habitos(mono,bebida(agua,6)).
+habitos(mono,descanso(4)).
+
+#CÓDIGO DEL PROGRAMA#
+:-dynamic habitos/2.
+
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+guardar:-
+    tell('C:/Users/agust/Desktop/BaseDatos.txt'),
+    listing(cuenta),
+    told.
+
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Consultar hábitos de un animal'),
+    writeln('2-Consultar animal que tiene x hábito'),
+    write('Seleccione una opción: '),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+    nl,
+    writeln('Adios...').
+
+seleccion(1):-
+    abrir,
+    nl,
+    write('Ingrese el animal a consultar: '),
+    read(ANIMAL),
+    nl,
+    write('Los hábitos del '),
+    write(ANIMAL),
+    writeln(' son:'),
+    buscar_habitos(ANIMAL).
+
+seleccion(2):-
+    abrir,
+    nl,
+    write('Ingrese el hábito a consultar: '),
+    read(HABITO),
+    nl,
+    write('Los animales que tienen el habito '),
+    write(HABITO),
+    writeln(' son:'),
+    buscar_por_habito(HABITO).
+
+buscar_habitos(ANIMAL):-
+    habitos(ANIMAL,HABITO),
+    retract(habitos(ANIMAL,HABITO)),
+    writeln(HABITO),
+    buscar_habitos(ANIMAL).
+buscar_habitos(_).
+
+buscar_por_habito(HABITO):-
+    HABITO = alimentacion,
+    habitos(ANIMAL,alimentacion(COMIDA,CANTIDAD)),
+    retract(habitos(ANIMAL,alimentacion(COMIDA,CANTIDAD))),
+    write(ANIMAL),
+    write(' - '),
+    write(COMIDA),
+    write(' - '),
+    writeln(CANTIDAD),
+    buscar_por_habito(HABITO).
+buscar_por_habito(HABITO):-
+    HABITO = bebida,
+    habitos(ANIMAL,bebida(BEBIDA,CANTIDAD)),
+    retract(habitos(ANIMAL,bebida(BEBIDA,CANTIDAD))),
+    write(ANIMAL),
+    write(' - '),
+    write(BEBIDA),
+    write(' - '),
+    writeln(CANTIDAD),
+    buscar_por_habito(HABITO).
+buscar_por_habito(HABITO):-
+    HABITO = descanso,
+    habitos(ANIMAL,descanso(CANTIDAD)),
+    retract(habitos(ANIMAL,descanso(CANTIDAD))),
+    write(ANIMAL),
+    write(' - '),
+    writeln(CANTIDAD),
+    buscar_por_habito(HABITO).
+buscar_por_habito(_).
+
+#EJERCICIO 4#
+Ampliar el ejercicio 1 a través del uso de functores. Por ejemplo:
+    gasto(maria, super(coto,500)).
+    gasto(omar, tel(fijo,telecom,150)).
+    gasto(maria,tel(movil,personal,100)).
+  a. Ingresar un gasto (por ej. super) e informar todas las personas que tienen dicho gasto.
+  b. Informar las personas que tienen un consumo superior a los $150 en un cierto gasto (dato de entrada).
+  c. Calcular gasto promedio para una determinada persona (dato de entrada).
+
+#DASE DE DATOS#
+gasto(agustin,super(coto,1400)).
+gasto(juan,telefono(celular,movistar,1500)).
+gasto(ricardo,telefono(fijo,telecom,1000)).
+gasto(mariano,super(lagallega,2000)).
+
+#CODIGO DEL PROGRAMA#
+:-dynamic gasto/2.
+
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Consultar personas que tienen cierto gasto'),
+    writeln('2-Consultar personas que superan $150 dinero en un cierto gasto'),
+    writeln('3-Calcular gasto promedio'),
+    write('Seleccione una opción: '),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+    nl,
+    writeln('Adios...').
+
+seleccion(1):-
+    abrir,
+    nl,
+    write('Ingrese el gasto a consultar: '),
+    read(GASTO),
+    nl,
+    write('Las personas que poseen gasto de '),
+    write(GASTO),
+    writeln(' son:'),
+    buscar_por_gasto(GASTO).
+
+seleccion(2):-
+    abrir,
+    nl,
+    write('Ingrese el gasto a consultar: '),
+    read(GASTO),
+    nl,
+    write('Las personas que superan los $150 en gastos de '),
+    write(GASTO),
+    writeln(' son:'),
+    superan_monto(GASTO).
+
+seleccion(3):-
+    abrir,
+    nl,
+    write('Ingrese el nombre de la persona: '),
+    read(PERSONA),
+    nl,
+    suma_gastos(PERSONA,SUMA),
+    abrir,
+    contar_gastos(PERSONA,CONTADOR),
+    PROMEDIO is SUMA / CONTADOR,
+    write('El gasto promedio de '),
+    write(PERSONA),
+    write(' es:'),
+    writeln(PROMEDIO).
+
+
+buscar_por_gasto(GASTO):-
+    GASTO = super,
+    gasto(PERSONA,super(SUPER,MONTO)),
+    retract(gasto(PERSONA,super(SUPER,MONTO))),
+    write(PERSONA),
+    write(' - '),
+    write(SUPER),
+    write(' - '),
+    writeln(MONTO),
+    buscar_por_gasto(GASTO).
+buscar_por_gasto(GASTO):-
+    GASTO = telefono,
+    gasto(PERSONA,telefono(TIPO,COMPANIA,MONTO)),
+    retract(gasto(PERSONA,telefono(TIPO,COMPANIA,MONTO))),
+    write(PERSONA),
+    write(' - '),
+    write(TIPO),
+    write(' - '),
+    write(COMPANIA),
+    write(' - '),
+    writeln(MONTO),
+    buscar_por_gasto(GASTO).
+buscar_por_gasto(_).
+
+superan_monto(GASTO):-
+    GASTO = super,
+    gasto(PERSONA,super(SUPER,MONTO)),
+    retract(gasto(PERSONA,super(SUPER,MONTO))),
+    MONTO > 150,
+    write(PERSONA),
+    write(' - '),
+    write(SUPER),
+    write(' - '),
+    writeln(MONTO),
+    superan_monto(GASTO).
+superan_monto(GASTO):-
+    GASTO = telefono,
+    gasto(PERSONA,telefono(TIPO,COMPANIA,MONTO)),
+    retract(gasto(PERSONA,telefono(TIPO,COMPANIA,MONTO))),
+    MONTO > 150,
+    write(PERSONA),
+    write(' - '),
+    write(TIPO),
+    write(' - '),
+    write(COMPANIA),
+    write(' - '),
+    writeln(MONTO),
+    superan_monto(GASTO).
+superan_monto(_).
+
+suma_gastos(PERSONA,SUMA):-
+    gasto(PERSONA,telefono(_,_,MONTOTEL)),
+    retract(gasto(PERSONA,telefono(_,_,MONTOTEL))),
+    suma_gastos(PERSONA,SUM),
+    SUMA is SUM + MONTOTEL.
+suma_gastos(PERSONA,SUMA):-
+    gasto(PERSONA,super(_,MONTOSUP)),
+    retract(gasto(PERSONA,super(_,MONTOSUP))),
+    suma_gastos(PERSONA,SUM),
+    SUMA is SUM + MONTOSUP.
+suma_gastos(_,0).
+
+contar_gastos(PERSONA,CONTADOR):-
+    gasto(PERSONA,GASTO),
+    retract(gasto(PERSONA,GASTO)),
+    contar_gastos(PERSONA,CONT),
+    CONTADOR is CONT + 1.
+contar_gastos(_,0).
+
+
+#EJERCICIO 5#
+Hacer un programa que permita realizar altas, bajas y consultas a la base de datos de una librería. De cada libro se registran los 
+siguientes datos:
+    • Nro. de libro (auto numérico)
+    • Titulo
+    • Autor
+    • Editorial
+    • Precio
+La base datos debe guardarse en disco. Calcular además el precio promedio de los libros de un determinado autor.
+
+#EJERCICIO 6#
+Hacer un programa que permita registrar en una Base de Datos recetas de cocina. De cada receta se registran los siguientes datos:
+    • Código de receta
+    • Nombre de la receta
+  Y por cada ingrediente que contenga la receta:
+    • Nombre del ingrediente
+    • Cantidad
+A su vez, permitir ingresar dos (2) ingredientes e informar de todas las recetas (Código y Nombre) que poseen ambos ingredientes.
+Por otro lado, para un ingrediente en particular y una cierta cantidad del mismo, determinar aquellas recetas que llevan ese 
+ingrediente y superan dicha cantidad.
