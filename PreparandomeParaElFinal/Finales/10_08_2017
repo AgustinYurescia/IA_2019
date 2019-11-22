@@ -1,0 +1,115 @@
+[Final Inteligencia Artificial - 10/8/17]
+Práctica:
+Hechos:
+    persona(dni,nombre,edad,obraSocial,plan).
+    obraSocial (obra,plan, medicamento,%cobertura).
+1- devolver una lista con los DNI de las personas que tengan más de 65 años y cuyo plan cubra al menos 10 medicamentos al 100%.
+2- devolver los datos de aquellas personas que tengan más de una obra social.
+(Atentos con el segundo ejercicio, según Laura "casi nadie lo hizo bien, porque era bien sencillo y todos se entreveraron". 
+Era con fail, no con retract.)
+
+#BASE DE DATOS#
+persona(11111111,juan,50,ioma,total).
+persona(22222222,maria,70,osecac,total).
+persona(22222222,maria,70,ioma,total).
+persona(33333333,pedro,66,osde,total).
+persona(44444444,roman,45,osecac,total).
+
+obrasocial(ioma,total,med1,80).
+obrasocial(ioma,total,med2,90).
+obrasocial(ioma,total,med3,100).
+obrasocial(ioma,total,med4,60).
+obrasocial(ioma,total,med5,100).
+obrasocial(ioma,total,med6,50).
+obrasocial(ioma,total,med7,100).
+obrasocial(ioma,total,med8,100).
+obrasocial(ioma,total,med9,40).
+obrasocial(ioma,total,med10,100).
+obrasocial(ioma,total,med11,100).
+obrasocial(osecac,total,med1,100).
+obrasocial(osecac,total,med2,100).
+obrasocial(osecac,total,med3,100).
+obrasocial(osecac,total,med4,100).
+obrasocial(osecac,total,med5,100).
+obrasocial(osecac,total,med6,100).
+obrasocial(osecac,total,med7,100).
+obrasocial(osecac,total,med8,100).
+obrasocial(osecac,total,med9,100).
+obrasocial(osecac,total,med10,100).
+obrasocial(osecac,total,med11,100).
+obrasocial(osde,total,med1,100).
+obrasocial(osde,total,med2,100).
+obrasocial(osde,total,med3,100).
+obrasocial(osde,total,med4,100).
+obrasocial(osde,total,med5,100).
+obrasocial(osde,total,med6,100).
+obrasocial(osde,total,med7,100).
+obrasocial(osde,total,med8,100).
+obrasocial(osde,total,med9,100).
+obrasocial(osde,total,med10,100).
+obrasocial(osde,total,med11,100).
+
+#CÓDIGO DEL PROGRAMA#
+:- dynamic persona/5.
+:- dynamic obrasocial/4.
+
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Personas de mas de 65 con más de 10 med cubiertos al 100'),
+    writeln('2-Personas con más de una obra social'),
+    writeln('Ingrese una opción: '),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+  nl,
+  writeln('Adiós...').
+
+seleccion(1):-
+    abrir,
+    nl,
+    obtener_dnis(DNIS),
+    write('Los DNI de las personas que cumplen con la cond son: '),
+    writeln(DNIS).
+
+seleccion(2):-
+    abrir,
+    writeln('Las personas con más de una obra social son: '),
+    listar_personas.
+
+obtener_dnis([DNI|T]):-
+    retract(persona(DNI,_,EDAD,OS,PLAN)),
+    EDAD > 65,
+    contar_med100(OS,PLAN,CANTIDAD),
+    CANTIDAD >= 10,
+    obtener_dnis(T).
+obtener_dnis([]).
+
+contar_med100(_,_,0).
+contar_med100(OS,PLAN,CANTIDAD):-
+    retract(obrasocial(OS,PLAN,_,100)),
+    contar_med100(OS,PLAN,CANT),
+    CANTIDAD is CANT + 1.
+
+listar_personas:-
+    persona(DNI,NOMBRE,EDAD,_,_),
+    contar_os(DNI,CANTIDAD),
+    CANTIDAD > 1,
+    write('Dni: '),
+    write(DNI),
+    write(' - Nombre: '),
+    write(NOMBRE),
+    write(' - Edad: '),
+    writeln(EDAD),
+    listar_personas.
+
+contar_os(DNI,CANTIDAD):-
+    retract(persona(DNI,_,_,_,_)),
+    contar_os(DNI,CANT),
+    CANTIDAD is CANT + 1.
+contar_os(_,0).
