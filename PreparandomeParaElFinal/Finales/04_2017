@@ -1,0 +1,118 @@
+Dada una BD con:
+  cantante(nombre_cantante,pais_origen)
+  album(nombre_album,nombre_cantante,[lista_temas]),fecha_edicion,copias_vendidas) (El formato del campo fecha es dd/mm/aaaa)
+1)Ingrese un álbum y una lista [] de temas y a partir de esto devolver una lista  con aquellos temas de la lista original que correspondan 
+al álbum ingresado.
+2)Informar cuantos álbumes fueron lanzados en un determinado año (dato de entrada)  por cantantes de origen sueco.
+3)Ingresar un cantante y devolver una lista con todos los albumes que haya lanzado  a lo largo de su carrera y cuya cantidad de copias 
+supere el millón.
+De las cosas más locas que había en las consignas estaba el tema de sacar la fecha(dd/mm/aaaa). 
+Para eso había que usar el predicado sub_atom, sub_atom(fecha_edición,6,4,_,Año).
+
+#BASE DE DATOS#
+cantante(cantante1,argentina).
+cantante(cantante2,brasil).
+cantante(cantante3,uruguay).
+cantante(cantante4,suecia).
+
+album(album1,cantante1,[cancion1,cancion2,cancion3,cancion4],05/12/1996,1100000).
+album(album2,cantante1,[cancion5,cancion6,cancion7,cancion8],23/11/2000,2000000).
+album(album3,cantante2,[cancion9,cancion10,cancion11,cancion12],22/10/1999,100000).
+album(album4,cantante3,[cancion13,cancion14,cancion15,cancion16],24/05/2002,900000).
+album(album5,cantante3,[cancion17,cancion18,cancion19,cancion20],24/11/2002,100000).
+album(album6,cantante4,[cancion21,cancion22,cancion23,cancion24],'24/11/2002',100000).
+album(album7,cantante4,[cancion25,cancion26,cancion27,cancion28],'24/12/2002',100000).
+
+#CÓDIGO DEL PROGRAMA#
+:- dynamic cantante/2.
+:- dynamic album/5.
+
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Comprobar cuales de los temas ingresados pertenecen a album'),
+    writeln('2-Cantidad de albunes suecos en X año'),
+    writeln('3-Albunes de un artista que superan 1 millon de copias'),
+    writeln('Ingrese una opción: '),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+  nl,
+  writeln('Adiós...').
+
+seleccion(1):-
+    abrir,
+    nl,
+    write('Ingrese un album: '),
+    read(ALBUM),
+    write('Ingrese una lista de temas (con [] finaliza): '),
+    leer(TEMAS),
+    coinciden(ALBUM,TEMAS,COINCIDEN),
+    write('Los temas ingresados que pertenecen al album son: '),
+    writeln(COINCIDEN).
+
+seleccion(2):-
+    abrir,
+    nl,
+    write('Ingrese el año: '),
+    read(ANIO),
+    contar_albunes_suecos(ANIO,CANTIDAD),
+    nl,
+    write('La cantidad de álbunes suecos en el año '),
+    write(ANIO),
+    write(' son: '),
+    writeln(CANTIDAD).
+
+seleccion(3):-
+    abrir,
+    nl,
+    write('Ingrese un cantante: '),
+    read(CANTANTE),
+    buscar_albunes(CANTANTE,ALBUNES),
+    nl,
+    write('Los álbunes que superan 1 millón de copias son: '),
+    writeln(ALBUNES).
+
+
+leer([H|T]):-
+    read(H),
+    H \= [],
+    leer(T).
+leer([]).
+
+coinciden(ALBUM,TEMAS,COINCIDEN):-
+    album(ALBUM,_,CANCIONES,_,_),
+    buscar(TEMAS,CANCIONES,COINCIDEN).
+
+buscar([],_,[]).
+buscar([HT|TT],CANCIONES,[HT|TC]):-
+    existe(HT,CANCIONES),
+    buscar(TT,CANCIONES,TC).
+buscar([_|TT],CANCIONES,TC):-
+    buscar(TT,CANCIONES,TC).
+
+existe(HT,[HT|_]).
+existe(HT,[_|TC]):-
+    existe(HT,TC).
+
+contar_albunes_suecos(ANIO,CANTIDAD):-
+    cantante(CANTANTE,suecia),
+    retract(album(_,CANTANTE,_,FECHA,_)),
+    sub_atom(FECHA,6,4,_,ANIO),
+    contar_albunes_suecos(ANIO,CANT),
+    CANTIDAD is CANT + 1.
+contar_albunes_suecos(_,0).
+
+buscar_albunes(CANTANTE,[H|T]):-
+    retract(album(H,CANTANTE,_,_,COPIAS)),
+    COPIAS >= 1000000,
+    buscar_albunes(CANTANTE,T).
+buscar_albunes(CANTANTE,[_|T]):-
+    retract(album(_,CANTANTE,_,_,_)),
+    buscar_albunes(CANTANTE,T).
+buscar_albunes(_,[]).
