@@ -1,0 +1,97 @@
+Los ... son datos que no eran relevantes para el desarrollo del ejercicio):
+    catedra(nombre_catedra,...).
+    comision(nombre_catedra,comision,ciclo,...,[legajos de inscriptos]).
+    alumno(legajo,nombre,...).
+* Aclaracion: una catedra puede tener muchas comisiones *
+Te pedia:
+    1- Devolver lista [] de las catedras del ciclo 2017 que tengan más de 100 inscriptos en sus comisiones.
+    2- Mostrar las catedras en las que se encuentra inscripto un alumno (ingresando el legajo) tambien en el ciclo 2017.
+    
+#BASE DE DATOS#
+catedra(ia).
+catedra(ades).
+comision(ades,1,2016,[11111,44444,55555])
+comision(ades,1,2017,[22222,33333]).
+comision(ades,2,2017,[66666,77777]).
+comision(ia,1,2016,[44444]).
+comision(ia,1,2017,[11111,22222,33333]).
+comision(ia,2,2017,[66666,77777,55555]).
+alumno(11111,juan).
+alumno(22222,martin).
+alumno(33333,pepe).
+alumno(44444,raul).
+alumno(55555,lautaro).
+alumno(66666,mariana).
+alumno(77777,juana).
+
+#CÓDIGO DEL PROGRAMA#
+:- dynamic catedra/1.
+:- dynamic comision/4.
+:- dynamic alumno/2.
+
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Cátedras con mas de 100 inscriptos en 2017'),
+    writeln('2-Buscar inscripciones de un alumno'),
+    writeln('Ingrese una opción: '),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+  nl,
+  writeln('Adiós...').
+
+seleccion(1):-
+    abrir,
+    superan(CATEDRAS),
+    nl,
+    write('Las cátedras que superan 5 inscriptos son: '),
+    write(CATEDRAS),
+    nl.
+
+seleccion(2):-
+    abrir,
+    nl,
+    write('Ingrese el legajo de del alumno a consultar: '),
+    read(LEGAJO),
+    buscar_catedras_alumno(LEGAJO,CATEDRAS),
+    nl,
+    write('Las cátedras en las que cursa el alumno son: '),
+    writeln(CATEDRAS).
+
+superan([CATEDRA|T]):-
+    catedra(CATEDRA),
+    obtener_total(CATEDRA,TOTAL),
+    TOTAL > 5,
+    superan(T).
+superan([]).
+
+obtener_total(CATEDRA,TOTAL):-
+    retract(comision(CATEDRA,_,2017,INSCRIPTOS)),
+    contar(INSCRIPTOS,CANTIDAD),
+    obtener_total(CATEDRA,INS),
+    TOTAL is CANTIDAD + INS.
+obtener_total(_,0).
+
+contar([],0).
+contar([_|T],CONTADOR):-
+    contar(T,CONT),
+    CONTADOR is CONT + 1.
+
+
+buscar_catedras_alumno(LEGAJO,[CATEDRA|T]):-
+    alumno(LEGAJO,_),
+    retract(comision(CATEDRA,_,2017,INSCRIPTOS)),
+    existe(LEGAJO,INSCRIPTOS),
+    buscar_catedras_alumno(LEGAJO,T).
+buscar_catedras_alumno(_,[]).
+
+
+existe(LEGAJO,[LEGAJO|_]).
+existe(LEGAJO,[_|T]):-
+    existe(LEGAJO,T).    
