@@ -1,0 +1,67 @@
+Cliente(dni,nombre,obrasocial).
+Practica(cod,medico,fecha,dnicliente,asistio).
+Ingresar un dni y buscar si el cliente entre todas sus practicas falto mas de un 80% y asi escribir si es posible que falte o no.
+Si no hay practicas registradas para ese cliente informar que no hay datos suficientes para saberlo.
+
+#BASE DE DATOS#
+cliente(11111111,juan,os1).
+cliente(22222222,pedro,os2).
+cliente(33333333,pablo,os3).
+
+practica(1,med1,01122017,11111111,si).
+practica(2,med2,04122017,11111111,si).
+practica(3,med3,10122017,11111111,si).
+practica(4,med1,02122017,22222222,si).
+practica(5,med1,13122017,11111111,si).
+practica(6,med1,05122017,22222222,no).
+practica(7,med1,08122017,22222222,no).
+practica(8,med1,24122017,11111111,no).
+practica(9,med1,08122017,22222222,no).
+practica(10,med1,08122017,22222222,no).
+practica(11,med1,08122017,22222222,no).
+
+:- dynamic cliente/3.
+:- dynamic practica/5.
+
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+menu:-
+    nl,
+    write('Ingrese el dni del paciente: '),
+    read(DNI),
+    asistio_suficiente(DNI).
+
+asistio_suficiente(DNI):-
+    abrir,
+    contar_todas(DNI,TOTAL),
+    abrir,
+    contar_asistencia(DNI,ASISTENCIAS),
+    TOTAL \= 0,
+    PORCENT is ASISTENCIAS * 100 / TOTAL,
+    mostrar_mensaje(PORCENT).
+asistio_suficiente(_):-
+    nl,
+    writeln('El paciente no posee prácticas.').
+
+contar_todas(DNI,TOTAL):-
+    cliente(DNI,_,_),
+    retract(practica(_,_,_,DNI,_)),
+    contar_todas(DNI,TOT),
+    TOTAL is TOT + 1.
+contar_todas(_,0).
+
+contar_asistencia(DNI,ASISTENCIAS):-
+    cliente(DNI,_,_),
+    retract(practica(_,_,_,DNI,si)),
+    contar_asistencia(DNI,ASIST),
+    ASISTENCIAS is ASIST + 1.
+contar_asistencia(_,0).
+
+mostrar_mensaje(PORCENT):-
+    PORCENT >= 20,
+    nl,
+    writeln('El paciente puede faltar.').
+mostrar_mensaje(_):-
+    nl,
+    writeln('El paciente no puede faltar.').
