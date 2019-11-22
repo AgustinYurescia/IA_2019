@@ -1,0 +1,98 @@
+Hechos:
+jardin(CodigoJ, datoqnoserv, [Tipos de Sala])
+salas(CodigoJ, datosqenoserv, tipo_de_sala, [Dni Asistentes])
+1.Dada una Lista [] de Dni, y un Codigo de Jardin Devolver una Lista [] con aquellos Dni que asisten realmente al Jardin.
+2.Dada una Lista [] de Jardines, y una Lista [] de Tipos de Sala, devolver una Lista [] con los Jardines que tengan todos los 
+tipos de sala.
+Tips: en ninguno se usaba (o era necesario retract), como solo es recorrer listas las condiciones de fin van al principio. 
+De los que andan dando vuelta, no había visto uno con esta complejidad, no es imposible, pero hay que pensarlo, si el resto los aprendiste 
+mecánicos este costaba un poco más.
+
+#BASE DE DATOS#
+jardin(1,[3,4,5]).
+jardin(2,[2,3,4,5]).
+salas(1,3,[11111111,22222222,33333333]).
+salas(1,4,[44444444,55555555,66666666]).
+salas(1,5,[77777777,88888888,99999999]).
+salas(2,2,[10101010,12121212,13131313]).
+salas(2,3,[14141414,15151515,16161616]).
+salas(2,4,[17171717,18181818,19191919]).
+salas(2,4,[20202020,21212121,23232323]).
+
+#CODIGO DEL PROGRAMA#
+:-dynamic jardin/2.
+:-dynamic salas/3.
+
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Buscar asistentes'),
+    writeln('2-Buscar si algun jardín tiene todos los tipos de salas'),
+    write('Seleccione una opcion: '),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+    nl,
+    writeln('Adios...').
+
+seleccion(1):-
+    abrir,
+    writeln('Ingrese la lista de dni (con [] finaliza): '),
+    leer(LISTADNI),
+    writeln('Ingrese el código del jardín: '),
+    read(JARDIN),
+    buscar(JARDIN,LISTADNI,ASISTENTES),
+    nl,
+    write('Los que asisten al jardín ingresado son: '),
+    writeln(ASISTENTES).
+
+seleccion(2):-
+    abrir,
+    writeln('Ingrese una lista de jardines (con [] finaliza): '),
+    leer(JARDINES),
+    writeln('Ingrese una lista de tipos de sala: '),
+    leer(SALAS),
+    buscar_salas(JARDINES,SALAS,TIENENTODOS),
+    nl,
+    write('Los jardines que poseen todos los tipos de sala son: '),
+    writeln(TIENENTODOS).
+
+
+leer([H|T]):-
+    read(H),
+    H \= [],
+    leer(T).
+leer([]).
+
+buscar(JARDIN,LISTADNI,ASISTENTES):-
+    salas(JARDIN,_,DNIS),
+    coinciden(LISTADNI,DNIS,ASISTENTES).
+
+coinciden([],_,[]).
+coinciden([HL|TL],DNIS,[HL|TA]):-
+    existe(HL,DNIS),
+    coinciden(TL,DNIS,TA).
+coinciden([_|TL],DNIS,TA):-
+    coinciden(TL,DNIS,TA).
+
+existe(HL,[HL|_]).
+existe(HL,[_|TD]):-
+    existe(HL,TD).
+
+buscar_salas([],_,[]).
+buscar_salas([HJ|TJ],SALAS,[HJ|TT]):-
+    jardin(HJ,SALASJARDIN),
+    existen_todas(SALAS,SALASJARDIN),
+    buscar_salas(TJ,SALAS,TT).
+buscar_salas([_|TJ],SALAS,TT):-
+    buscar_salas(TJ,SALAS,TT).
+
+existen_todas([HS|TS],SALASJARDIN):-
+    existe(HS,SALASJARDIN),
+    existen_todas(TS,SALASJARDIN).
+existen_todas([],_).    
