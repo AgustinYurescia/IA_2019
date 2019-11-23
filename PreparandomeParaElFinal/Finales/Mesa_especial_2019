@@ -1,0 +1,108 @@
+[IA- Inteligencia Artificial] Final mesa especial 18/06/2019
+
+  colegio(cod_colegio,direccion,telefono,ciudad,[niveles]). Niveles podían ser unos 4 o 5 que listaba (este dato no servía)
+  niveles(cod_colegio,nivel,curso,turno,[dni_Alumnos]).
+  
+No tengo las consignas literales, pero eran más o menos las siguientes:
+  1) Para un nivel ingresado devolver un listado con todos los colegios que sean de Rosario, que ofrezcan el nivel ingresado y que tengan 
+  hasta 90 alumnos.
+  2) Dado un listado de Dni de alumnos ingresado, un Colegio y un Turno, devolver otro listado de los alumnos que verdaderamente 
+  pertenezcan a ese colegio y asistan a ese turno (de la lista de ingresada).
+
+#BASE DE DATOS#
+colegio(1,direccion1,111111,ciudad1).
+colegio(2,direccion2,222222,ciudad1).
+colegio(3,direccion3,333333,ciudad1).
+colegio(4,direccion4,444444,ciudad2).
+colegio(5,direccion5,555555,ciudad2).
+
+niveles(1,1,1,manana,[11111111,22222222,33333333,44444444]).
+niveles(1,1,1,tarde,[55555555,66666666,77777777,88888888]).
+niveles(2,1,1,noche,[99999999,10101010,12121212,13131313]).
+niveles(3,2,1,tarde,[14141414,15151515,16161616,17171717]).
+niveles(4,2,1,noche,[18181818,19191919,20202020,21212121]).
+
+#CODIGO DEL PROGRAMA#
+:- dynamic colegio/4.
+:- dynamic niveles/5.
+
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Listado de colegios rosarinos de X nivel con <= 90 alumnos'),
+    writeln('2-Listado de alumnos de un colegio y turno'),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+    nl,
+    writeln('Adios...').
+
+seleccion(1):-
+    abrir,
+    nl,
+    write('Ingrese el nivel a solicitar: '),
+    read(NIVEL),
+    nl,
+    writeln('Listado de colegios: '),
+    listado_colegios(NIVEL).
+
+seleccion(2):-
+    abrir,
+    writeln('Ingrese los dnis a verificar (con [] finaliza): '),
+    leer(DNIS),
+    write('Ingrese el código del colegio: '),
+    read(CODCOLEGIO),
+    write('Ingrese un turno (manana/tarde/noche): '),
+    read(TURNO),
+    buscar_alumnos(DNIS,CODCOLEGIO,TURNO,ALUMNOS),
+    nl,
+    write('Los alumnos que cursan en el turno ingresado son: '),
+    writeln(ALUMNOS).
+
+
+leer([H|T]):-
+    read(H),
+    H \= [],
+    leer(T).
+leer([]).
+
+listado_colegios(NIVEL):-
+    retract(niveles(CODCOLEGIO,NIVEL,_,_,ALUMNOS)),
+    retract(colegio(CODCOLEGIO,DIRECCION,TELEFONO,ciudad1)),
+    contar(ALUMNOS,CONTADOR),
+    CONTADOR =< 90,
+    write('Codigo: '),
+    write(CODCOLEGIO),
+    write(' - Direccion: '),
+    write(DIRECCION),
+    write(' - Telefono: '),
+    writeln(TELEFONO),
+    listado_colegios(NIVEL).
+listado_colegios(_).
+
+contar([],0).
+contar([_|T],CONTADOR):-
+    contar(T,CONT),
+    CONTADOR is CONT + 1.
+
+buscar_alumnos(DNIS,CODCOLEGIO,TURNO,ALUMNOS):-
+    retract(niveles(CODCOLEGIO,_,_,TURNO,CURSANTES)),
+    coincidencia(DNIS,CURSANTES,ALUMNOS),
+    buscar_alumnos(DNIS,CODCOLEGIO,TURNO,ALUMNOS).
+buscar_alumnos(_,_,_,_).
+
+coincidencia([H1|T1],CURSANTES,[H1|T3]):-
+    existe(H1,CURSANTES),
+    coincidencia(T1,CURSANTES,T3).
+coincidencia([_|T1],CURSANTES,ALUMNOS):-
+    coincidencia(T1,CURSANTES,ALUMNOS).
+coincidencia([],_,[]).
+
+existe(H1,[H1|_]).
+existe(H1,[_|T2]):-
+    existe(H1,T2).
