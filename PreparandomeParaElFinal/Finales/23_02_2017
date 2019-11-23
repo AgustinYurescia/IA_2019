@@ -1,0 +1,99 @@
+ * [Final IA 23/02/2017]
+Era muy parecido al final que tomo el 10/03/2016
+  edificio(nombre, dirección, localidad).
+  departamento(nombreEdificio, piso, nro, precio, estado, [Código de características])
+  característica (código, descripción).
+Un departamento se identificaba por nombre de edificio, piso y nro.
+Estado podía ser libre u ocupado.
+Te pedía, ingresar las características (códigos), localidad, y un rango de precios (precio desde y precio hasta), y luego listar todos los 
+departamentos disponibles y lista:
+  Nombre del departamento.
+  Dirección.
+  Piso
+  Nro
+  Descripción de las características.
+
+#BASE DE DATOS#
+edificio(edificio1,direccion1,localidad1).
+edificio(edificio2,direccion2,localidad1).
+edificio(edificio3,direccion3,localidad2).
+
+departamento(edificio1,1,1,4500,libre,[1,2,3]).
+departamento(edificio1,1,2,6000,ocupado,[1,2,4]).
+departamento(edificio1,1,3,8500,libre,[1,2,3,4,5]).
+departamento(edificio2,1,1,5000,ocupado,[1,2,4]).
+departamento(edificio2,1,2,9500,libre,[1,2,3,4,5]).
+departamento(edificio3,2,1,12000,libre,[1,2,3,4,5]).
+
+caracteristica(1,luz).
+caracteristica(2,agua).
+caracteristica(3,gas).
+caracteristica(4,balcon).
+caracteristica(5,amueblado).
+
+#CÓDIGO DEL PROGRAMA#
+
+:- dynamic edificio/3.
+:- dynamic departamento/6.
+:- dynamic caracteristica/2.
+
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+menu:-
+    abrir,
+    nl,
+    write('Ingrese los codigos de las características deseadas (finaliza con []): '),
+    leer(CARACTERISTICAS),
+    write('Ingrese la localidad: '),
+    read(LOCALIDAD),
+    write('Ingrese el precio mínimo: '),
+    read(PRECIOMIN),
+    write('Ingrese el precio máximo: '),
+    read(PRECIOMAX),
+    nl,
+    writeln('Los departamentos que cumplen con lo solicitado son: '),
+    buscar_deptos(CARACTERISTICAS,LOCALIDAD,PRECIOMIN,PRECIOMAX).
+
+leer([H|T]):-
+    read(H),
+    H \= [],
+    leer(T).
+leer([]).
+
+buscar_deptos(CARACTERISTICAS,LOCALIDAD,PRECIOMIN,PRECIOMAX):-
+    edificio(EDIFICIO,DIRECCION,LOCALIDAD),
+    retract(departamento(EDIFICIO,PISO,NRO,PRECIO,libre,CARAC)),
+    PRECIO >= PRECIOMIN,
+    PRECIO =< PRECIOMAX,
+    tiene_todas_caracteristicas(CARACTERISTICAS,CARAC),
+    obtener_descripciones(CARAC,DESCRIPCIONES),
+    nl,
+    write('Edificio: '),
+    write(EDIFICIO),
+    write(' - Dirección: '),
+    write(DIRECCION),
+    write(' - Piso: '),
+    write(PISO),
+    write(' - Nro: '),
+    write(NRO),
+    write(' - Caracteriscas: '),
+    write(DESCRIPCIONES),
+    write(' - Precio: '),
+    write(PRECIO),
+    buscar_deptos(CARACTERISTICAS,LOCALIDAD,PRECIOMIN,PRECIOMAX).
+buscar_deptos(_,_,_,_).
+
+tiene_todas_caracteristicas([H1|T1],CARAC):-
+    existe(H1,CARAC),
+    tiene_todas_caracteristicas(T1,CARAC).
+tiene_todas_caracteristicas([],_).
+
+existe(H1,[H1|_]).
+existe(H1,[_|T]):-
+    existe(H1,T).
+
+obtener_descripciones([H1|T1],[DESCRIPCION|T2]):-
+    caracteristica(H1,DESCRIPCION),
+    obtener_descripciones(T1,T2).
+obtener_descripciones([],[]).
