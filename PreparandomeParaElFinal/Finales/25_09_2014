@@ -1,0 +1,134 @@
+Dada la siguiente BD:
+persona(dni,nombre,edad).
+auto_vendido(patente,codModelo,fecha,precio,[DNItitulares])
+auto(codModelo,modelo)
+1) ingresar dni de una persona y mostrar todos los autos de los que es titular.
+2) ingresar el codigo de un auto y calcular el precio promedio de autos vendidos.
+3) mostrar el titular mas joven de cada auto vendido.
+
+#BASE DE DATOS#
+persona(11111111,persona1,20).
+persona(22222222,persona2,34).
+persona(33333333,persona3,37).
+persona(44444444,persona4,24).
+
+auto_vendido(aaa111,1,'12/12/12',100000,[11111111,22222222]).
+auto_vendido(bbb222,1,'12/12/12',150000,[11111111]).
+auto_vendido(ccc333,3,'12/12/12',100000,[33333333]).
+auto_vendido(ddd444,4,'12/12/12',100000,[33333333,44444444]).
+
+auto(1,2016).
+auto(2,2017).
+auto(3,2018).
+auto(4,2019).
+
+#CÓDIGO DEL PROGRAMA#
+:- dynamic persona/3.
+:- dynamic auto_vendido/5.
+:- dynamic auto/2.
+
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Buscar autos de una persona'),
+    writeln('2-Calcular el precio promedio'),
+    writeln('3-Titular más joven de cada auto vendido'),
+    write('Seleccione una opcion: '),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+    nl,
+    writeln('Adios...').
+
+seleccion(1):-
+    abrir,
+    nl,
+    write('Ingrese el dni de la persona: '),
+    read(DNI),
+    nl,
+    writeln('Listado de autos vendidos: '),
+    listado_autos(DNI).
+
+seleccion(2):-
+    nl,
+    abrir,
+    writeln('Ingrese el código de modelo: '),
+    read(CODIGO),
+    sumar_precios(CODIGO,SUMATORIA),
+    abrir,
+    contar_ventas(CODIGO,CANTIDAD),
+    CANTIDAD \= 0,
+    PROMEDIO is SUMATORIA / CANTIDAD,
+    write('El precio promedio del modelo es: '),
+    writeln(PROMEDIO).
+seleccion(2):-
+    nl,
+    writeln('El vehículo no se vendió nunca.').
+
+seleccion(3):-
+    abrir,
+    nl,
+    writeln('Listado de titulares jóvenes: '),
+    listar_titulares_jovenes.
+
+leer([H|T]):-
+    read(H),
+    H \= [],
+    leer(T).
+leer([]).
+
+listado_autos(DNI):-
+    retract(auto_vendido(PATENTE,MODELO,FECHA,PRECIO,TITULARES)),
+    existe(DNI,TITULARES),
+    write('Patente: '),
+    write(PATENTE),
+    write(' - Cod de modelo: '),
+    write(MODELO),
+    write(' - Fecha: '),
+    write(FECHA),
+    write(' - Precio: '),
+    writeln(PRECIO),
+    listado_autos(DNI).
+listado_autos(_).
+
+existe(H1,[H1|_]).
+existe(H1,[_|T2]):-
+    existe(H1,T2).
+
+sumar_precios(CODIGO,SUMATORIA):-
+    retract(auto_vendido(_,CODIGO,_,PRECIO,_)),
+    sumar_precios(CODIGO,SUM),
+    SUMATORIA is SUM + PRECIO.
+sumar_precios(_,0).
+
+contar_ventas(CODIGO,CONTADOR):-
+    retract(auto_vendido(_,CODIGO,_,_,_)),
+    contar_ventas(CODIGO,CONT),
+    CONTADOR is CONT + 1.
+contar_ventas(_,0).
+
+listar_titulares_jovenes:-
+    retract(auto_vendido(PATENTE,_,_,_,[H|T])),
+    persona(H,_,EDAD),
+    obtener_el_mas_joven(T,H,DNIM,EDAD,EDADM),
+    write('Patente: '),
+    write(PATENTE),
+    write(' - Dni titular: '),
+    write(DNIM),
+    write(' - Edad: '),
+    writeln(EDADM),
+    listar_titulares_jovenes.
+listar_titulares_jovenes.
+
+obtener_el_mas_joven([],D,D,E,E).
+obtener_el_mas_joven([H|T],_,DNIM,EDAD,EDADM):-
+    persona(H,_,E),
+    E<EDAD,
+    obtener_el_mas_joven(T,H,DNIM,E,EDADM).
+obtener_el_mas_joven([_|T],DNI,DNIM,EDAD,EDADM):-
+    obtener_el_mas_joven(T,DNI,DNIM,EDAD,EDADM).
