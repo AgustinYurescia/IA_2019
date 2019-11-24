@@ -1,0 +1,103 @@
+1-Ingresar una lista de cadenas y un carácter. Por cada cadena de la lista y el carácter, verificar si ya están en la BD, 
+sino esta registrarlo palabra(cadena,carácter,cantidad).
+2-Ingresar un carácter y calcular el promedio de veces que aparece en la BD.
+
+#CÓDIGO DEL PROGRAMA#
+:- dynamic palabras/3.
+
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+guardar:-
+    tell('C:/Users/agust/Desktop/BaseDatos.txt'),
+    listing(palabras),
+    told.
+
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Alta de cadana y caracter'),
+    writeln('2-Calcular promedio de apariciones de un caracter'),
+    write('Seleccione una opcion: '),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+    nl,
+    writeln('Adios...').
+
+seleccion(1):-
+    abrir,
+    nl,
+    writeln('Ingrese una lista de palabras (finaliza con []): '),
+    leer(PALABRAS),
+    write('Ingrese un caacter: '),
+    read(CARACTER),
+    contar(PALABRAS,CARACTER,CANTIDAD),
+    buscar_y_agregar(PALABRAS,CARACTER,CANTIDAD).
+
+seleccion(2):-
+    nl,
+    abrir,
+    write('Ingrese un caracter: '),
+    read(CARACTER),
+    sumar_total_apariciones(CARACTER,APARICIONES),
+    abrir,
+    contar_apariciones(CARACTER,CANTIDAD),
+    CANTIDAD \= 0,
+    PROMEDIO is APARICIONES / CANTIDAD,
+    nl,
+    write('La cantiadad promedio de apariciones del caracter es: '),
+    writeln(PROMEDIO),
+    nl.
+seleccion(2):-
+    nl,
+    writeln('El caracter no existe en la base de datos.').
+
+leer([H|T]):-
+    read(H),
+    H \= [],
+    leer(T).
+leer([]).
+
+contar([],_,0).
+contar([H|T],CARACTER,CANTIDAD):-
+    contar(T,CARACTER,CANT),
+    aparece(H,CARACTER,CONTADOR),
+    CANTIDAD is CANT + CONTADOR.
+contar([_|T],CARACTER,CANTIDAD):-
+    contar(T,CARACTER,CANTIDAD).
+
+aparece('',_,0).
+aparece(H,CARACTER,CONTADOR):-
+    sub_atom(H,0,1,_,CARACTER),
+    sub_atom(H,1,_,0,SUB),
+    aparece(SUB,CARACTER,CONT),
+    CONTADOR is CONT + 1.
+aparece(H,CARACTER,CONTADOR):-
+    sub_atom(H,1,_,0,SUB),
+    aparece(SUB,CARACTER,CONTADOR).
+
+buscar_y_agregar(PALABRAS,CARACTER,CANTIDAD):-
+    palabras(PALABRAS,CARACTER,CANTIDAD),
+    nl,
+    writeln('No se puede agregar a la base de dato porque ya existen').
+buscar_y_agregar(PALABRAS,CARACTER,CANTIDAD):-
+    assert(palabras(PALABRAS,CARACTER,CANTIDAD)),
+    guardar,
+    nl,
+    writeln('Carga realizada con éxito'),
+    nl.
+
+sumar_total_apariciones(CARACTER,APARICIONES):-
+    retract(palabras(_,CARACTER,CANTIDAD)),
+    sumar_total_apariciones(CARACTER,APAR),
+    APARICIONES is APAR + CANTIDAD.
+sumar_total_apariciones(_,0).
+
+contar_apariciones(CARACTER,CANTIDAD):-
+    retract(palabras(_,CARACTER,_)),
+    contar_apariciones(CARACTER,CANT),
+    CANTIDAD is CANT + 1.
+contar_apariciones(_,0).
