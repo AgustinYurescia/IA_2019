@@ -1,0 +1,144 @@
+Dada una BBDD compuesta por hechos con la siguiente estructura:
+  orden(nro_orden, fecha_orden, cliente).
+  producto(codigo_producto, descripcion, cantidad_en_stock).
+  orden_producto(nro_orden, codigo_producto, cantidad_solicitada).
+Hacer un programa que permita:
+  1)Ingresar una lista [] de productos y que a partir de esta determine a través de una nueva lista [] aquellos productos para los cuales 
+  no hay suficiente stock para cubrir todas las órdenes que haya con pedidos de dicho producto.
+  2) Informar a través de una lista aquellos productos que aparecen en al menos 5 órdenes de compra.
+  3) Dado un cliente (dato de entrada) informar si tiene al menos 2 órdenes de compra emitidas en el mismo mes y año.
+Nota: 
+  - Para los ítems 1 y 2 trabajar sólo con los códigos de los productos.
+  - El formato de la fecha es dd/mm/aaaa.
+  
+#BASE DE DATOS#
+orden(1,'05/12/12',cliente1).
+orden(2,'12/12/12',cliente1).
+orden(3,'23/12/12',cliente1).
+orden(4,'22/12/12',cliente2).
+orden(5,'04/11/12',cliente2).
+  
+producto(1,producto1,200).
+producto(2,producto2,50).
+  
+orden_producto(1,1,40).
+orden_producto(2,1,10).
+orden_producto(3,1,30).
+orden_producto(4,1,30).
+orden_producto(5,1,30).
+orden_producto(6,2,40).
+orden_producto(7,2,50).
+  
+#CODIGO DEL PROGRAMA#
+:- dynamic orden/3.
+:- dynamic producto/3.
+:- dynamic orden_producto/3.
+
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+guardar:-
+    tell('C:/Users/agust/Desktop/BaseDatos.txt'),
+    listing(palabras),
+    told.
+
+
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Ingresar productos y ver cuales no hay stock para cubrir la demanda'),
+    writeln('2-Productos que aparecen en al menos 5 órdenes.'),
+    writeln('3-Verificar si un cliente tiene al menos 2 ordenes el mismo mes y año'),
+    write('Seleccione una opcion: '),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+    nl,
+    writeln('Adios...').
+
+seleccion(1):-
+    nl,
+    abrir,
+    writeln('Ingrese una lista de productos(finaliza con []): '),
+    leer(PRODUCTOS),
+    buscar_sin_stock(PRODUCTOS,SINSTOCK),
+    nl,
+    write('Los productos sin stock son: '),
+    write(SINSTOCK).
+
+seleccion(2):-
+    nl,
+    abrir,
+    buscar_productos_ordenes(PRODUCTOS),
+    write('Los productos que aparecen en al menos 5 órdenes son: '),
+    writeln(PRODUCTOS).
+
+seleccion(3):-
+    nl,
+    abrir,
+    write('Ingrese el nombre del cliente: '),
+    read(CLIENTE),
+    verificar_ordenes(CLIENTE),
+    nl,
+    nl,
+    write('El cliente tiene al menos dos órdenes emitidas el mismo mes y año.').
+seleccion(3):-
+    nl,
+    writeln('El cliente no tiene al menos dos órdenes emitidas el mismo mes y año.').
+
+leer([H|T]):-
+    read(H),
+    H \= [],
+    leer(T).
+leer([]).
+
+buscar_sin_stock([],[]).
+buscar_sin_stock([H|T1],[H|T2]):-
+    retract(producto(H,_,STOCK)),
+    sumar_cantidades_pedidas(H,CANTIDAD),
+    STOCK < CANTIDAD,
+    buscar_sin_stock(T1,T2).
+buscar_sin_stock([_|T1],SINSTOCK):-
+    buscar_sin_stock(T1,SINSTOCK).
+
+sumar_cantidades_pedidas(H,CANTIDAD):-
+    retract(orden_producto(_,H,CANTPEDIDA)),
+    sumar_cantidades_pedidas(H,CANT),
+    CANTIDAD is CANT + CANTPEDIDA.
+sumar_cantidades_pedidas(_,0).
+
+buscar_productos_ordenes([PRODUCTO|T]):-
+    retract(producto(PRODUCTO,_,_)),
+    contar_apariciones(PRODUCTO,APARICIONES),
+    APARICIONES > 4,
+    buscar_productos_ordenes(T).
+ buscar_productos_ordenes(PRODUCTOS):-
+    retract(producto(_,_,_)),
+    buscar_productos_ordenes(PRODUCTOS).
+buscar_productos_ordenes([]).
+
+contar_apariciones(PRODUCTO,APARICIONES):-
+    retract(orden_producto(_,PRODUCTO,_)),
+    contar_apariciones(PRODUCTO,APAR),
+    APARICIONES is APAR + 1.
+contar_apariciones(_,0).
+
+verificar_ordenes(CLIENTE):-
+    retract(orden(_,FECHA,CLIENTE)),
+    sub_atom(FECHA,3,2,_,MES),
+    sub_atom(FECHA,6,2,_,ANIO),
+    sumar_ordenes(CLIENTE,MES,ANIO,CANTIDAD),
+    CANTIDAD >= 2.
+
+sumar_ordenes(CLIENTE,MES,ANIO,CANTIDAD):-
+    retract(orden(_,FECHA,CLIENTE)),
+    sub_atom(FECHA,3,2,_,MES),
+    sub_atom(FECHA,3,2,_,ANIO),
+    sumar_ordenes(CLIENTE,MES,ANIO,CANT),
+    CANTIDAD is CANT + 1.
+sumar_ordenes(CLIENTE,MES,ANIO,CANTIDAD):-
+    retract(orden(_,_,CLIENTE)),
+    sumar_ordenes(CLIENTE,MES,ANIO,CANTIDAD).
+sumar_ordenes(_,_,_,1).
