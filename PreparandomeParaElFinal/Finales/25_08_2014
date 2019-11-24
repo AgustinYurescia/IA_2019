@@ -1,0 +1,113 @@
+INTELIGENCIA ARTIFICIAL] Mesa especial - 25/08/2014
+Dada la siguiente BD:
+  personas(Nombre, Edad, [Profesiones],Ciudad).
+  cursos(Profesion, [Cursos]).
+  personas_cursos(Nombre,Profesion,[CursosRealizados]).
+1) Ingresar una profesión (dato de entrada), y mostar la edad promedio de dicha profesion en la ciudad de Rosario.
+2) Ingresar una profesión (dato de entrada), y mostrar para cada persona, la lista de cursos que le faltan realizar.
+3) Mostrar la profesión con mayor cantidad de cursos
+
+#BASE DE DATOS#
+personas(nombre1,18,[p1,p2],ciudad1).
+personas(nombre2,20,[p1,p3],ciudad1).
+
+cursos(p1,[1,2]).
+cursos(p2,[1,2]).
+cursos(p3,[1,2]).
+
+personas_cursos(nombre1,p1,[1]).
+personas_cursos(nombre1,p2,[1,2]).
+personas_cursos(nombre2,p1,[1,2]).
+personas_cursos(nombre2,p3,[2]).
+
+#CODIGO DEL PROGRAMA#
+:- dynamic personas/4.
+:- dynamic personas_cursos/3.
+:- dynamic cursos/2.
+
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Promedio de edad de una profesion en la ciudad1'),
+    writeln('2-Cursos que le faltan realizar a cada persona en una profesión'),
+    writeln('3-Profesión con mayor cantidad de cursos'),
+    write('Seleccione una opcion: '),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+    nl,
+    writeln('Adios...').
+
+seleccion(1):-
+    abrir,
+    nl,
+    write('Ingrese la profesión: '),
+    read(PROFESION),
+    sumar_edades(PROFESION,SUMATORIA),
+    abrir,
+    contar_personas(PROFESION,CONTADOR),
+    CONTADOR \= 0,
+    PROMEDIO is SUMATORIA / CONTADOR,
+    nl,
+    write('El promedio de edad es: '),
+    writeln(PROMEDIO).
+seleccion(1):-
+    nl,
+    writeln('No xisten personas con dicha profesión.').
+
+seleccion(2):-
+    nl,
+    abrir,
+    writeln('Ingrese la profesión: '),
+    read(PROFESION),
+    cursos(PROFESION,CURSOS),
+    comparar(PROFESION,CURSOS).
+
+seleccion(3). %NO ME SALIÓ
+
+sumar_edades(PROFESION,SUMATORIA):-
+    retract(personas(_,EDAD,PROFESIONES,ciudad1)),
+    existe(PROFESION,PROFESIONES),
+    sumar_edades(PROFESION,SUM),
+    SUMATORIA is SUM + EDAD.
+sumar_edades(PROFESION,SUMATORIA):-
+    retract(personas(_,_,_,_)),
+    sumar_edades(PROFESION,SUMATORIA).
+sumar_edades(_,0).
+
+contar_personas(PROFESION,CONTADOR):-
+    retract(personas(_,_,PROFESIONES,ciudad1)),
+    existe(PROFESION,PROFESIONES),
+    contar_personas(PROFESION,CONT),
+    CONTADOR is CONT + 1.
+contar_personas(_,0).
+
+existe(H1,[H1|_]).
+existe(H1,[_|T2]):-
+    existe(H1,T2).
+
+comparar(PROFESION,CURSOS):-
+    retract(personas_cursos(NOMBRE,PROFESION,CURSOSHECHOS)),
+    faltantes(CURSOS,CURSOSHECHOS,FALTAN),
+    write('A '),
+    write(NOMBRE),
+    write(' le faltan los siguientes cursos: '),
+    write(FALTAN),
+    comparar(PROFESION,CURSOS).
+
+faltantes([],_,[]).
+faltantes([H1|T1],CURSOSHECHOS,[H1|T2]):-
+    noexiste(H1,CURSOSHECHOS),
+    faltantes(T1,CURSOSHECHOS,T2).
+faltantes([_|T1],CURSOSHECHOS,FALTAN):-
+    faltantes(T1,CURSOSHECHOS,FALTAN).
+
+noexiste(X,[H|T]):-
+    X\=H,
+    noexiste(X,T).
+noexiste(_,[]).
