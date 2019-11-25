@@ -1,0 +1,162 @@
+###[IA][Inteligencia Artificial] final de 28/11/2018.###
+  usuarios(id, edad, estado, ciudad, [idAmigos]).
+  comentarios(idcomentario,idusuario, comentario).
+  provincia(idprovincia, [ciudades])
+
+Se trataba de una red social en donde habia usuarios y hacian comentarios. Decia que un usuario puede estar activo o inactivo y que los 
+amigos de un usuario estan en la lista idAmigos y que es bidireccional.
+1- Mostrar la cantidad (numero) de usuarios que estan activos que hayan hecho al menos 2 comentarios.
+2- Para un usuario ingresado, mostrar una lista de usuarios que podrian ser sus amigos. Los usuarios que se listan NO tienen que estar en 
+su lista de amigos actualmente. Ademas no tienen que haber realizado ningun comentario y tienen que ser de la misma ciudad que el usuario 
+ingresado
+
+%BASE DE DATOS%
+usuarios(1,18,activo,ciudad1,[2,3,4]).
+usuarios(2,18,activo,ciudad1,[1,3,5]).
+usuarios(3,18,activo,ciudad1,[1,2,6]).
+usuarios(4,18,inactivo,ciudad1,[1]).
+usuarios(5,18,activo,ciudad1,[2]).
+usuarios(6,18,activo,ciudad2,[3,7]).
+usuarios(7,18,inactivo,ciudad2,[6]).
+usuarios(8,18,activo,ciudad2,[]).
+
+comentarios(1,1,comentario1).
+comentarios(2,1,comentario2).
+comentarios(3,1,comentario3).
+comentarios(4,4,comentario4).
+comentarios(5,4,comentario5).
+comentarios(6,4,comentario6).
+comentarios(7,2,comentario7).
+comentarios(8,2,comentario8).
+
+%CODIGO DEL PROGRAMA%
+:- dynamic usuarios/5.
+:- dynamic comentarios/3.
+
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Usuarios activos que hayan hecho al menos 2 comentarios'),
+    writeln('2-Posibles amigos para un usuario'),
+    write('Seleccione una opcion: '),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+    nl,
+    writeln('Adios...').
+
+seleccion(1):-
+    nl,
+    abrir,
+    contar_usuarios(CANTIDAD),
+    nl,
+    write('La cantidad de usuarios con al menos 2 comentarios es: '),
+    writeln(CANTIDAD).
+
+seleccion(2):-
+    nl,
+    abrir,
+    write('Ingrese el id del usuario: '),
+    read(IDUSUARIO),
+    retract(usuarios(IDUSUARIO,_,_,CIUDAD,AMIGOS)),
+    buscar_amigos(IDUSUARIO,CIUDAD,AMIGOS,AMIGOSPOSIBLES),
+    nl,
+    write('Los posibles amigos son: '),
+    writeln(AMIGOSPOSIBLES).
+
+contar_usuarios(CANTIDAD):-
+    retract(usuarios(IDUSUARIO,_,activo,_,_)),
+    contar_comentarios(IDUSUARIO,COMENTARIOS),
+    COMENTARIOS > 1,
+    contar_usuarios(CANT),
+    CANTIDAD is CANT + 1.
+contar_usuarios(CANTIDAD):-
+    retract(usuarios(_,_,_,_,_)),
+    contar_usuarios(CANTIDAD).
+contar_usuarios(0).
+
+contar_comentarios(IDUSUARIO,COMENTARIOS):-
+    retract(comentarios(_,IDUSUARIO,_)),
+    contar_comentarios(IDUSUARIO,COMENT),
+    COMENTARIOS is COMENT + 1.
+contar_comentarios(_,0).
+
+buscar_amigos(IDUSUARIO,CIUDAD,AMIGOS,[AMIGO|T]):-
+    retract(usuarios(AMIGO,_,_,CIUDAD,_)),
+    not(comentarios(_,AMIGO,_)),
+    no_existe(AMIGO,AMIGOS),
+    buscar_amigos(IDUSUARIO,CIUDAD,AMIGOS,T).
+buscar_amigos(IDUSUARIO,CIUDAD,AMIGOS,AMIGOSPOSIBLES):-
+    retract(usuarios(_,_,_,_,_)),
+    buscar_amigos(IDUSUARIO,CIUDAD,AMIGOS,AMIGOSPOSIBLES).
+buscar_amigos(_,_,_,[]).
+
+no_existe(X,[H|T]):-
+    H \= X,
+    no_existe(X,T).
+no_existe(_,[]).
+
+###[IA] Final de hoy 22/02/2018.###
+  institutoSalud(Codinstitu,Nombre,Direccion,Telefono,Sector,[Obras Sociales]).
+  Medico(Matricula, Nombre, Especialidad, [CodInstitutos]). 
+  Sector podía ser privado o publico
+1- Devolver una lista [] con los códigos de instituciones que coincidan con la obra social y con el sector, ambos ingresados como dato de 
+entrada.
+2- Devolver una lista [] con los códigos de instituciones en las que atiende un médico y según una obra social, también estos dos datos se 
+ingresaban como dato.
+
+###FINAL IA 14/02/2013###
+
+Se tiene una bc de la forma: 
+  deportista(nombre, edad,[lista de deportes q realiza]).
+
+1)ingresar una lista de deportes y devolver una lista nueva con los nombres de los deportistas que practican al menos 2 de los deportes 
+ingresados.
+2) ingresar un deporte e informar en una lista los deportistas que lo practican y son mayores de 30 años.
+
+###[IA] Final 24/11###
+  publicacion(idPub,descripcion,IdUsuarioPub,[Lista ID Usuarios que dan Like]).
+  usuario(id,nombre,edad).
+1. Listar las publicaciones que tienen más de 50 likes.
+2. Ingresar un id de usuario, y decir si el 80% de sus publicaciones no tienen ningun like.
+
+###[IA] Final 18/08/2016###
+  menu(idMenu, nomMenu, [lista idPlato])
+  Plato(idPlato, descripción, tipo, tieneSal, tieneGluten).
+  Tipo puede ser entrada, plato principal, postre.
+1. Dado un nombre de menu decir cuantos de sus platos contienen gluten.
+2. Listar aquellos menu que ninguno de sus platos contiene sal.
+
+###[IA] Recuperatorio de AD - 30/10/2019###
+  alumno(dni_alumno, nombre_alumno)
+  materia(id_materia, nombre_materia,[dnis_alumnos])
+  carrera(id_carrera, nombre_carrera, [lista_ids_materias])
+  examen_final(dni_alumno, id_materia, nota, anio) 
+Pedia que con un menu recursivo, se haga
+  1- Ingresar un nombre de materia, anio, lista de dnis de alumnos, se devuelvan 2 listas una con los nombres de los aprobados para esa 
+  materia en ese anio y otra con los no aprobados.
+  2- Ingresar una lista de ids de materias y devolver una lista con las carreras que tengan todas esas materias.
+  
+###[IA] Inteligencia Artificial Final 17/12/2015###
+La base de hechos estaba formada por:
+  cancion(IdCancion,Nombre,Artista,Duración,Genero)
+  invitados(Nombre, [IdCanciones que gusta]) 
+1- Listar las canciones que le gusta a mas del 80% de los invitados.
+2- Listar las canciones de género "vals" que duren mas de 15 minutos.
+
+###[IA] [Inteligencia Artificial] 14/12/2017###
+  escuela(escuela,descripcion)
+  alumno(legajo,nombre,direccion,escuela,estatura)
+1- Por cada escuela, promedio de estatura de sus alumnos. Mostrar de la siguiente manera:
+Escuela: XXX
+Promedio de estatura: xxx
+Escuela: YYY
+Promedio de estatura: yyy
+Escuela: ZZZ
+Promedio de estatura: zzz
+2- Ingresar una escuela y devolver una lista con los legajos de los alumnos que midan menos de 165cm.
