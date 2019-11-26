@@ -628,18 +628,98 @@ cancion(3,nombre3,artista2,12,genero1).
 cancion(4,nombre4,artista2,20,genero2).
 
 invitados(invitado1,[1,2]).
-invitados(invitado2,[3]).
-invitados(invitado3,[1,4]).
-invitados(invitado4,[1,3]).
-invitados(invitado5,[1]).
+invitados(invitado2,[2,3]).
+invitados(invitado3,[1,2,4]).
+invitados(invitado4,[1,2,3]).
+invitados(invitado5,[1,2]).
 invitados(invitado6,[1,2]).
 invitados(invitado7,[1,2]).
-invitados(invitado8,[1,3]).
-invitados(invitado9,[1]).
-invitados(invitado10,[1,4]).
+invitados(invitado8,[1,2,3]).
+invitados(invitado9,[1,2]).
+invitados(invitado10,[1,2,4]).
 
 %CODIGO DEL PROGRAMA%
+:- dynamic cancion/5.
+:- dynamic invitados/2.
 
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Canciones que le gustan a mas del 80% de los invitados'),
+    writeln('2-Vals que duren mas de 15 minutos'),
+    write('Seleccione una opcion: '),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+    nl,
+    writeln('Adios...').
+
+seleccion(1):-   
+    nl,
+    abrir,
+    obtener_cantidad_invitados(CANTIDAD),
+    obtener_todas_canciones(CANCIONES),
+    abrir,
+    listar_canciones(CANTIDAD,CANCIONES).
+
+seleccion(2):-
+    nl,
+    abrir,
+    buscar_vals(VALS),
+    write('Los vals son: '),
+    writeln(VALS),
+    nl.
+
+listar_canciones(CANTIDAD,[H|T]):-
+    contar_gustos(H,CANTIDADGUSTOS),
+    mostrar(H,CANTIDADGUSTOS,CANTIDAD),
+    listar_canciones(CANTIDAD,T).
+listar_canciones(_,[]).
+
+obtener_cantidad_invitados(CANTIDAD):-
+    retract(invitados(_,_)),
+    obtener_cantidad_invitados(CANT),
+    CANTIDAD is CANT + 1.
+obtener_cantidad_invitados(0).
+
+obtener_todas_canciones([H|T]):-
+    retract(cancion(H,_,_,_,_)),
+    obtener_todas_canciones(T).
+obtener_todas_canciones([]).
+
+contar_gustos(CANCION,CANTIDADGUSTOS):-
+    retract(invitados(_,GUSTOS)),
+    existe(CANCION,GUSTOS),
+    contar_gustos(CANCION,GUS),
+    CANTIDADGUSTOS is GUS + 1.
+contar_gustos(_,0):-abrir.
+
+mostrar(H,CANTIDADGUSTOS,CANTIDAD):-
+    PROMEDIO is CANTIDADGUSTOS * 100 / CANTIDAD,
+    PROMEDIO >= 80,
+    retract(cancion(H,NOMBRE,ARTISTA,_,_)),
+    nl,
+    write('Cancion: '),
+    write(NOMBRE),
+    write(' - Artista: '),
+    writeln(ARTISTA),
+    mostrar(H,CANTIDADGUSTOS,CANTIDAD).
+mostrar(_,_,_).
+
+existe(H,[H|_]).
+existe(H,[_|T]):-
+    existe(H,T).
+
+buscar_vals([CANCION|T]):-
+    retract(cancion(_,CANCION,_,DURACION,genero1)),
+    DURACION > 15,
+    buscar_vals(T).
+buscar_vals([]).
 
 ########################################################################################################################################
 
@@ -654,3 +734,80 @@ Promedio de estatura: yyy
 Escuela: ZZZ
 Promedio de estatura: zzz
 2- Ingresar una escuela y devolver una lista con los legajos de los alumnos que midan menos de 165cm.
+
+%BASE DE DATOS%
+escuela(escuela1,descripcion1).
+escuela(escuela2,descripcion2).
+escuela(escuela3,descripcion3).
+
+alumno(11111,alumno1,dereccion1,escuela1,180).
+alumno(22222,alumno2,dereccion2,escuela1,160).
+alumno(33333,alumno3,dereccion3,escuela1,170).
+alumno(44444,alumno4,dereccion4,escuela2,160).
+alumno(55555,alumno5,dereccion5,escuela2,165).
+alumno(66666,alumno6,dereccion6,escuela2,162).
+alumno(77777,alumno7,dereccion7,escuela3,175).
+alumno(88888,alumno8,dereccion8,escuela3,170).
+alumno(99999,alumno9,dereccion9,escuela3,165).
+
+%CODIGO DEL PROGRAMA%
+:- dynamic escuela/2.
+:- dynamic alumno/5.
+
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Promedios de estatura'),
+    writeln('2-Alumnos que miden menos de 165cm en una escuela'),
+    write('Seleccione una opcion: '),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+    nl,
+    writeln('Adios...').
+
+seleccion(1):-
+    nl,
+    abrir,
+    writeln('Listado de promedios de estatura: '),
+    listar_escuelas.
+
+seleccion(2):-
+    nl,
+    abrir,
+    write('Ingrese una escuela: '),
+    read(ESCUELA),
+    buscar_alumnos(ESCUELA,ALUMNOS),
+    nl,
+    write('Los alumnos que miden más de 165cm son: '),
+    writeln(ALUMNOS).
+
+listar_escuelas:-
+    retract(escuela(ESCUELA,_)),
+    suma_estaturas_cantidad_alumnos(ESCUELA,SUMA,CANTIDAD),
+    PROMEDIO is SUMA / CANTIDAD,
+    nl,
+    write('Escuela: '),
+    writeln(ESCUELA),
+    write('Promedio de altura: '),
+    writeln(PROMEDIO),
+    listar_escuelas.
+listar_escuelas.
+
+suma_estaturas_cantidad_alumnos(ESCUELA,SUMA,CANTIDAD):-
+    retract(alumno(_,_,_,ESCUELA,ALTURA)),
+    suma_estaturas_cantidad_alumnos(ESCUELA,SUM,CANT),
+    SUMA is SUM + ALTURA,
+    CANTIDAD is CANT + 1.
+suma_estaturas_cantidad_alumnos(_,0,0).
+
+buscar_alumnos(ESCUELA,[H|T]):-
+    retract(alumno(H,_,_,ESCUELA,ALTURA)),
+    ALTURA < 165,
+    buscar_alumnos(ESCUELA,T).
+buscar_alumnos(_,[]).
