@@ -1,4 +1,4 @@
-###[IA][Inteligencia Artificial] final de 28/11/2018.###
+[IA][Inteligencia Artificial] final de 28/11/2018.
   usuarios(id, edad, estado, ciudad, [idAmigos]).
   comentarios(idcomentario,idusuario, comentario).
   provincia(idprovincia, [ciudades])
@@ -101,38 +101,394 @@ no_existe(X,[H|T]):-
     no_existe(X,T).
 no_existe(_,[]).
 
-###[IA] Final de hoy 22/02/2018.###
+########################################################################################################################################
+
+[IA] Final de hoy 22/02/2018
   institutoSalud(Codinstitu,Nombre,Direccion,Telefono,Sector,[Obras Sociales]).
   Medico(Matricula, Nombre, Especialidad, [CodInstitutos]). 
   Sector podía ser privado o publico
 1- Devolver una lista [] con los códigos de instituciones que coincidan con la obra social y con el sector, ambos ingresados como dato de 
 entrada.
-2- Devolver una lista [] con los códigos de instituciones en las que atiende un médico y según una obra social, también estos dos datos se 
-ingresaban como dato.
+2- Devolver una lista [] con los códigos de instituciones en las que atiende un médico y según una obra social, también estos dos datos 
+se ingresaban como dato.
 
-###FINAL IA 14/02/2013###
+%BASE DE DATOS%
+instituto(1,instituto1,direccion1,111111,sector1,[os1,os2,os3]).
+instituto(2,instituto2,direccion2,222222,sector2,[os1,os2,os4]).
+instituto(3,instituto3,direccion3,333333,sector3,[os2,os4]).
+instituto(4,instituto4,direccion4,444444,sector4,[os4]).
+instituto(5,instituto5,direccion5,555555,sector1,[os1,os4]).
+instituto(6,instituto6,direccion6,666666,sector2,[os3,os4]).
 
-Se tiene una bc de la forma: 
+medico(1,medico1,esp1,[1,2]).
+medico(2,medico2,esp2,[1,3,4]).
+medico(3,medico3,esp1,[1,3]).
+
+%CODIGO DEL PROGRAMA%
+:- dynamic instituto/6.
+:- dynamic medico/4.
+
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Lista de institutos según sector y obra social'),
+    writeln('2-Lista de institutos según médico y obra social'),
+    write('Seleccione una opcion: '),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+    nl,
+    writeln('Adios...').
+
+seleccion(1):-
+    nl,
+    abrir,
+    write('Ingrese el sector: '),
+    read(SECTOR),
+    write('Ingrese la obra social: '),
+    read(OS),
+    buscar_institutos_sector(SECTOR,OS,INSTITUTOS),
+    nl,
+    write('Los institutos son: '),
+    writeln(INSTITUTOS).
+
+seleccion(2):-
+    nl,
+    abrir,
+    write('Ingrese el medico: '),
+    read(MEDICO),
+    write('Ingrese la obra social: '),
+    read(OS),
+    buscar_institutos_medico(MEDICO,OS,INSTITUTOS),
+    nl,
+    write('Los institutos son: '),
+    writeln(INSTITUTOS).
+
+buscar_institutos_sector(SECTOR,OS,[INSTITUTO|T]):-
+    retract(instituto(INSTITUTO,_,_,_,SECTOR,OBRASSOC)),
+    existe(OS,OBRASSOC),
+    buscar_institutos_sector(SECTOR,OS,T).
+buscar_institutos_sector(SECTOR,OS,INSTITUTOS):-
+    retract(instituto(_,_,_,_,_,_)),
+    buscar_institutos_sector(SECTOR,OS,INSTITUTOS).
+buscar_institutos_sector(_,_,[]).
+
+existe(H,[H|_]).
+existe(H,[_|T]):-
+    existe(H,T).
+
+buscar_institutos_medico(MEDICO,OS,[INSTITUTO|T]):-
+    medico(MEDICO,_,_,INSTITUTOSMEDICO),
+    retract(instituto(INSTITUTO,_,_,_,_,OBRASSOC)),
+    existe(OS,OBRASSOC),
+    existe(INSTITUTO,INSTITUTOSMEDICO),
+    buscar_institutos_medico(MEDICO,OS,T).
+buscar_institutos_medico(MEDICO,OS,INSTITUTOS):-
+    retract(instituto(_,_,_,_,_,_)),
+    buscar_institutos_medico(MEDICO,OS,INSTITUTOS).
+buscar_institutos_medico(_,_,[]).
+
+########################################################################################################################################
+
+FINAL IA 14/02/2013
+Se tiene una bd de la forma: 
   deportista(nombre, edad,[lista de deportes q realiza]).
 
 1)ingresar una lista de deportes y devolver una lista nueva con los nombres de los deportistas que practican al menos 2 de los deportes 
 ingresados.
 2) ingresar un deporte e informar en una lista los deportistas que lo practican y son mayores de 30 años.
 
-###[IA] Final 24/11###
+%BASE DE DATOS%
+deportista(juan,20,[tenis,futbol]).
+deportista(mario,18,[futbol,basket]).
+deportista(pedro,23,[tenis,volley]).
+deportista(pepe,33,[tenis]).
+deportista(martin,31,[tenis,futbol,handball]).
+
+%CÓDIGO DEL PROGRAMA%
+:- dynamic deportista/3.
+
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Lista de deportistas que realizan al menos 2 de los deportes ingresados'),
+    writeln('2-Mayores de 30 años que realizan X deporte'),
+    write('Seleccione una opcion: '),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+    nl,
+    writeln('Adios...').
+
+seleccion(1):-
+    nl,
+    abrir,
+    write('Ingrese una lista de deportes (con [] finaliza): '),
+    leer(DEPORTES),
+    buscar_deportistas(DEPORTES,DEPORTISTAS),
+    nl,
+    write('Los deportistas son: '),
+    writeln(DEPORTISTAS).
+
+seleccion(2):-
+    nl,
+    abrir,
+    write('Ingrese un deporte: '),
+    read(DEPORTE),
+    buscar_deportistas_mayores(DEPORTE,DEPORTISTAS),
+    nl,
+    write('Los deportistas son: '),
+    writeln(DEPORTISTAS).
+
+leer([H|T]):-
+    read(H),
+    H \= [],
+    leer(T).
+leer([]).
+
+buscar_deportistas(DEPORTES,[DEPORTISTA|T2]):-
+    retract(deportista(DEPORTISTA,_,DEPORTESDEP)),
+    contar(DEPORTES,DEPORTESDEP,CONTADOR),
+    CONTADOR > 1,
+    buscar_deportistas(DEPORTES,T2).
+buscar_deportistas(DEPORTES,DEPORTISTAS):-
+    retract(deportista(_,_,_)),
+    buscar_deportistas(DEPORTES,DEPORTISTAS).
+buscar_deportistas(_,[]).
+
+contar([],_,0).
+contar([DEPORTE|T1],DEPORTESDEP,CONTADOR):-
+    existe(DEPORTE,DEPORTESDEP),
+    contar(T1,DEPORTESDEP,CONT),
+    CONTADOR is CONT + 1.
+contar([_|T1],DEPORTESDEP,CONTADOR):-
+    contar(T1,DEPORTESDEP,CONTADOR).
+
+existe(H,[H|_]).
+existe(H,[_|T]):-
+    existe(H,T).
+
+buscar_deportistas_mayores(DEPORTE,[DEPORTISTA|T]):-
+    retract(deportista(DEPORTISTA,EDAD,DEPORTESDEP)),
+    EDAD > 30,
+    existe(DEPORTE,DEPORTESDEP),
+    buscar_deportistas_mayores(DEPORTE,T).
+buscar_deportistas_mayores(DEPORTE,DEPORTISTAS):-
+    retract(deportista(_,_,_)),
+    buscar_deportistas_mayores(DEPORTE,DEPORTISTAS).
+buscar_deportistas_mayores(_,[]).
+
+########################################################################################################################################
+
+[IA] Final 24/11
   publicacion(idPub,descripcion,IdUsuarioPub,[Lista ID Usuarios que dan Like]).
   usuario(id,nombre,edad).
-1. Listar las publicaciones que tienen más de 50 likes.
+1. Listar las publicaciones que tienen más de 2 likes.
 2. Ingresar un id de usuario, y decir si el 80% de sus publicaciones no tienen ningun like.
 
-###[IA] Final 18/08/2016###
+%BASE DE DATOS%
+publicacion(1,desc1,1,[2,3,6]).
+publicacion(2,desc2,1,[]).
+publicacion(3,desc3,1,[]).
+publicacion(4,desc4,1,[]).
+publicacion(5,desc5,1,[]).
+publicacion(6,desc6,1,[]).
+publicacion(7,desc7,1,[]).
+publicacion(8,desc3,1,[]).
+publicacion(9,desc3,2,[1,3,4]).
+publicacion(10,desc3,2,[4,5]).
+publicacion(11,desc3,2,[5]).
+publicacion(12,desc3,2,[1,3,4,5]).
+publicacion(13,desc3,2,[]).
+
+usuario(1,nombre1,18).
+usuario(2,nombre2,18).
+usuario(3,nombre3,18).
+usuario(4,nombre4,18).
+usuario(5,nombre5,18).
+usuario(6,nombre6,18).
+
+%CODIGO DEL PROGRAMA -  EL PUNTO 2 NO SE POR QUÉ ANDA MAL%
+:- dynamic publicacion/4.
+:- dynamic usuario/3.
+
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Publicaciones con más de dos likes'),
+    writeln('2-Ver si el 80% de las publicaciones de un usuario no tienen likes'),
+    write('Seleccione una opcion: '),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+    nl,
+    writeln('Adios...').
+
+seleccion(1):-
+    nl,
+    abrir,
+    writeln('Listado de publicaciones: '),
+    listar_publicaciones.
+
+seleccion(2):-
+    nl,
+    write('Ingrese un usuario: '),
+    read(USUARIO),
+    abrir,
+    obtener_cantidad_pub_sin_likes(USUARIO,SINLIKES),
+    abrir,
+    obtener_cantidad_pub(USUARIO,CANTIDADPUB),
+    mostrar_resultado(SINLIKES,CANTIDADPUB).
+
+listar_publicaciones:-
+    retract(publicacion(CODIGO,DESCRIPCION,USUARIO,LIKES)),
+    contar(LIKES,CONTADOR),
+    CONTADOR > 2,
+    write('Codigo: '),
+    write(CODIGO),
+    write(' - Descripcion: '),
+    write(DESCRIPCION),
+    write(' - USUARIO: '),
+    write(USUARIO),
+    write(' - Likes: '),
+    writeln(CONTADOR),
+    listar_publicaciones.
+listar_publicaciones.
+
+contar([],0).
+contar([_|T],CONTADOR):-
+    contar(T,CONT),
+    CONTADOR is CONT + 1.
+
+obtener_cantidad_pub_sin_likes(USUARIO,SINLIKES):-
+    retract(publicacion(_,_,USUARIO,[])),
+    obtener_cantidad_pub_sin_likes(USUARIO,SIN),
+    SINLIKES is SIN + 1.
+obtener_cantidad_pub_sin_likes(_,0).
+
+obtener_cantidad_pub(USUARIO,CANTIDADPUB):-
+    retract(publicacion(_,_,USUARIO,_)),
+    obtener_cantidad_pub(USUARIO,CANT),
+    CANTIDADPUB is CANT + 1.
+obtener_cantidad_pub(_,0).
+
+mostrar_resultado(SINLIKES,CANTIDADPUB):-
+    PROMEDIO is SINLIKES * 100 / CANTIDADPUB,
+    PROMEDIO >= 80,
+    nl,
+    writeln('El usuario tiene pocos likes.').
+mostrar_resultado(_,_):-
+    nl,
+    writeln('El usuario tiene muchos likes.'),
+    nl.
+    
+########################################################################################################################################
+
+[IA] Final 18/08/2016
   menu(idMenu, nomMenu, [lista idPlato])
   Plato(idPlato, descripción, tipo, tieneSal, tieneGluten).
   Tipo puede ser entrada, plato principal, postre.
 1. Dado un nombre de menu decir cuantos de sus platos contienen gluten.
 2. Listar aquellos menu que ninguno de sus platos contiene sal.
 
-###[IA] Recuperatorio de AD - 30/10/2019###
+%BASE DE DATOS%
+menu(1,menu1,[1,4,7]).
+menu(2,menu2,[2,5,8]).
+menu(3,menu3,[3,6,9]).
+
+plato(1,plato1,entrada,si,si).
+plato(2,plato2,entrada,si,no).
+plato(3,plato3,entrada,no,no).
+plato(4,plato4,principal,si,si).
+plato(5,plato5,principal,si,no).
+plato(6,plato6,principal,no,no).
+plato(7,plato7,postre,si,si).
+plato(8,plato8,poste,si,no).
+plato(9,plato9,postre,no,no).
+
+%CODIGO DEL PROGRAMA%
+:- dynamic menu/3.
+:- dynamic plato/5.
+
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Ver cuantos platos de un menu contienen gluten'),
+    writeln('2-Menus que ningún plato tiene sal'),
+    write('Seleccione una opcion: '),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+    nl,
+    writeln('Adios...').
+
+seleccion(1):-
+    nl,
+    abrir,
+    write('Ingrese el nombre de un menú: '),
+    read(MENU),
+    tienen_gluten(MENU,CANTIDADGLUTEN),
+    nl,
+    write('Cantidad de platos con gluten: '),
+    writeln(CANTIDADGLUTEN).
+
+seleccion(2):-
+    nl,
+    abrir,
+    nl,
+    writeln('Los menus sin sal son: '),
+    listar_menus_sinsal.
+
+tienen_gluten(MENU,CANTIDADGLUTEN):-
+    menu(_,MENU,PLATOS),
+    contar_gluten(PLATOS,CANTIDADGLUTEN).
+
+contar_gluten([],0).
+contar_gluten([H|T],CANTIDADGLUTEN):-
+    retract(plato(H,_,_,_,si)),
+    contar_gluten(T,CANT),
+    CANTIDADGLUTEN is CANT + 1.
+contar_gluten([_|T],CANTIDADGLUTEN):-
+    contar_gluten(T,CANTIDADGLUTEN).
+
+
+listar_menus_sinsal:-
+    retract(menu(IDMENU,NOMBRE,PLATOS)),
+    no_tienen_sal(PLATOS),
+    write('Id: '),
+    write(IDMENU),
+    write(' - Nombre: '),
+    writeln(NOMBRE),
+    listar_menus_sinsal.
+
+no_tienen_sal([H|T]):-
+    plato(H,_,_,no,_),
+    no_tienen_sal(T).
+no_tienen_sal([]).
+
+########################################################################################################################################
+
+[IA] Recuperatorio de AD - 30/10/2019
   alumno(dni_alumno, nombre_alumno)
   materia(id_materia, nombre_materia,[dnis_alumnos])
   carrera(id_carrera, nombre_carrera, [lista_ids_materias])
@@ -140,16 +496,154 @@ ingresados.
 Pedia que con un menu recursivo, se haga
   1- Ingresar un nombre de materia, anio, lista de dnis de alumnos, se devuelvan 2 listas una con los nombres de los aprobados para esa 
   materia en ese anio y otra con los no aprobados.
-  2- Ingresar una lista de ids de materias y devolver una lista con las carreras que tengan todas esas materias.
+  2- Ingresar una lista de ids de materias y devolver una lista con las carreras que tengan todas esas materias. 
+
+%BASE DE DATOS%
+alumno(11111111,nombre1).
+alumno(22222222,nombre2).
+alumno(33333333,nombre3).
+alumno(44444444,nombre4).
+alumno(55555555,nombre5).
+alumno(66666666,nombre6).
+alumno(77777777,nombre7).
+alumno(88888888,nombre8).
+alumno(99999999,nombre9).
+alumno(10101010,nombre10).
+
+materia(1,materia1,[11111111,33333333]).
+materia(2,materia2,[22222222,44444444]).
+materia(3,materia3,[55555555,77777777]).
+materia(4,materia4,[66666666,88888888]).
+materia(5,materia5,[99999999,10101010]).
+
+carrera(1,carrera1,[1,2]).
+carrera(2,carrera2,[3,4]).
+carrera(3,carrera3,[4,5]).
+
+examen_final(11111111,1,10,2019).
+examen_final(33333333,1,5,2019).
+examen_final(22222222,2,4,2019).
+examen_final(44444444,2,4,2019).
+
+%CODIGO DEL PROGRAMA%
+:- dynamic alumno/2.
+:- dynamic materia/3.
+:- dynamic carrera/3.
+:- dynamic examen_final/4.
+
+abrir:-
+    consult('C:/Users/agust/Desktop/BaseDatos.txt').
+
+menu:-
+    nl,
+    writeln('0-Salir'),
+    writeln('1-Obtener aprobados y desaprobados'),
+    writeln('2-Carreras que tienen ciertas materias'),
+    write('Seleccione una opcion: '),
+    read(OPCION),
+    OPCION \= 0,
+    seleccion(OPCION),
+    menu.
+menu:-
+    nl,
+    writeln('Adios...').
+
+seleccion(1):-
+    nl,
+    abrir,
+    write('Ingrese el nombre de la materia: '),
+    read(MATERIA),
+    materia(CODIGOMATERIA,MATERIA,_),
+    write('Ingrese el año: '),
+    read(ANIO),
+    writeln('Ingrese los alumnos, con [] finaliza: '),
+    leer(ALUMNOS),
+    buscar_aprobados_desaprobados(CODIGOMATERIA,ANIO,ALUMNOS,APROBADOS,DESAPROBADOS),
+    nl,
+    write('Los aprobados son: '),
+    writeln(APROBADOS),
+    write('Los desaprobados son: '),
+    writeln(DESAPROBADOS),
+    nl.
+
+seleccion(2):-
+    nl,
+    writeln('Ingrese una lista de materias, finaliza con []: '),
+    leer(MATERIAS),
+    buscar_carreras(MATERIAS,CARRERAS),
+    nl,
+    write('Las carreras que tienen todas las materias ingresadas son: '),
+    writeln(CARRERAS),
+    abrir.
+
+leer([H|T]):-
+    read(H),
+    H \= [],
+    leer(T).
+leer([]).
+
+buscar_aprobados_desaprobados(CODIGOMATERIA,ANIO,[H1|T1],[H1|T2],DESAPROBADOS):-
+    examen_final(H1,CODIGOMATERIA,NOTA,ANIO),
+    NOTA >= 6,
+    retract(examen_final(H1,CODIGOMATERIA,NOTA,ANIO)),
+    buscar_aprobados_desaprobados(CODIGOMATERIA,ANIO,T1,T2,DESAPROBADOS).
+buscar_aprobados_desaprobados(CODIGOMATERIA,ANIO,[H1|T1],APROBADOS,[H1|T3]):-
+    retract(examen_final(H1,CODIGOMATERIA,_,ANIO)),
+    buscar_aprobados_desaprobados(CODIGOMATERIA,ANIO,T1,APROBADOS,T3).
+buscar_aprobados_desaprobados(CODIGOMATERIA,ANIO,[_|T1],APROBADOS,DESAPROBADOS):-
+    buscar_aprobados_desaprobados(CODIGOMATERIA,ANIO,T1,APROBADOS,DESAPROBADOS).
+buscar_aprobados_desaprobados(_,_,[],[],[]).
+
+buscar_carreras(MATERIAS,[H2|T2]):-
+    retract(carrera(_,H2,MATERIASCARRERA)),
+    estan_todas(MATERIAS,MATERIASCARRERA),
+    buscar_carreras(MATERIAS,T2).
+buscar_carreras(MATERIAS,CARRERAS):-
+    retract(carrera(_,_,_)),
+    buscar_carreras(MATERIAS,CARRERAS).
+buscar_carreras(_,[]).
+
+estan_todas([H1|T1],MATERIASCARRERA):-
+    existe(H1,MATERIASCARRERA),
+    estan_todas(T1,MATERIASCARRERA).
+estan_todas([],_).
+
+existe(H1,[H1|_]).
+existe(H1,[_|T2]):-
+    existe(H1,T2).
   
-###[IA] Inteligencia Artificial Final 17/12/2015###
+########################################################################################################################################
+
+[IA] Inteligencia Artificial Final 17/12/2015
 La base de hechos estaba formada por:
   cancion(IdCancion,Nombre,Artista,Duración,Genero)
   invitados(Nombre, [IdCanciones que gusta]) 
 1- Listar las canciones que le gusta a mas del 80% de los invitados.
 2- Listar las canciones de género "vals" que duren mas de 15 minutos.
 
-###[IA] [Inteligencia Artificial] 14/12/2017###
+%BASE DE DATOS%
+cancion(1,nombre1,artista1,20,genero1).
+cancion(2,nombre2,artista1,16,genero1).
+cancion(3,nombre3,artista2,12,genero1).
+cancion(4,nombre4,artista2,20,genero2).
+
+invitados(invitado1,[1,2]).
+invitados(invitado2,[3]).
+invitados(invitado3,[1,4]).
+invitados(invitado4,[1,3]).
+invitados(invitado5,[1]).
+invitados(invitado6,[1,2]).
+invitados(invitado7,[1,2]).
+invitados(invitado8,[1,3]).
+invitados(invitado9,[1]).
+invitados(invitado10,[1,4]).
+
+%CODIGO DEL PROGRAMA%
+
+
+########################################################################################################################################
+
+[IA] [Inteligencia Artificial] 14/12/2017
   escuela(escuela,descripcion)
   alumno(legajo,nombre,direccion,escuela,estatura)
 1- Por cada escuela, promedio de estatura de sus alumnos. Mostrar de la siguiente manera:
