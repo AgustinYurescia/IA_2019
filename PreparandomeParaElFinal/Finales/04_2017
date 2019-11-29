@@ -33,51 +33,49 @@ abrir:-
 menu:-
     nl,
     writeln('0-Salir'),
-    writeln('1-Comprobar cuales de los temas ingresados pertenecen a album'),
-    writeln('2-Cantidad de albunes suecos en X año'),
-    writeln('3-Albunes de un artista que superan 1 millon de copias'),
-    writeln('Ingrese una opción: '),
+    writeln('1-Ejercicio1'),
+    writeln('2-Ejercicio2'),
+    writeln('3-Ejercicio3'),
+    write('Seleccione una opcion: '),
     read(OPCION),
     OPCION \= 0,
     seleccion(OPCION),
     menu.
 menu:-
-  nl,
-  writeln('Adiós...').
+    nl,
+    writeln('Adios...').
 
 seleccion(1):-
-    abrir,
     nl,
+    abrir,
     write('Ingrese un album: '),
     read(ALBUM),
-    write('Ingrese una lista de temas (con [] finaliza): '),
+    write('Ingrese una lista de temas: '),
     leer(TEMAS),
-    coinciden(ALBUM,TEMAS,COINCIDEN),
+    album(ALBUM,_,TEMASALBUM,_,_),
+    buscar_temas(TEMAS,TEMASALBUM,COINCIDEN),
+    nl,
     write('Los temas ingresados que pertenecen al album son: '),
     writeln(COINCIDEN).
 
 seleccion(2):-
-    abrir,
     nl,
+    abrir,
     write('Ingrese el año: '),
     read(ANIO),
     contar_albunes_suecos(ANIO,CANTIDAD),
     nl,
-    write('La cantidad de álbunes suecos en el año '),
-    write(ANIO),
-    write(' son: '),
+    write('La cantidad de albunes suecos para el año ingresado es: '),
     writeln(CANTIDAD).
 
 seleccion(3):-
     abrir,
     nl,
-    write('Ingrese un cantante: '),
+    write('Ingrese el nombre de un cantante: '),
     read(CANTANTE),
-    buscar_albunes(CANTANTE,ALBUNES),
-    nl,
-    write('Los álbunes que superan 1 millón de copias son: '),
-    writeln(ALBUNES).
-
+    get_albunes(CANTANTE,ALBUNES),
+    abrir,
+    listar_albunes(ALBUNES).
 
 leer([H|T]):-
     read(H),
@@ -85,34 +83,42 @@ leer([H|T]):-
     leer(T).
 leer([]).
 
-coinciden(ALBUM,TEMAS,COINCIDEN):-
-    album(ALBUM,_,CANCIONES,_,_),
-    buscar(TEMAS,CANCIONES,COINCIDEN).
+buscar_temas([],_,[]).
+buscar_temas([H1|T1],TEMASALBUM,[H1|T2]):-
+    existe(H1,TEMASALBUM),
+    buscar_temas(T1,TEMASALBUM,T2).
+buscar_temas([_|T1],TEMASALBUM,COINCIDEN):-
+    buscar_temas(T1,TEMASALBUM,COINCIDEN).
 
-buscar([],_,[]).
-buscar([HT|TT],CANCIONES,[HT|TC]):-
-    existe(HT,CANCIONES),
-    buscar(TT,CANCIONES,TC).
-buscar([_|TT],CANCIONES,TC):-
-    buscar(TT,CANCIONES,TC).
-
-existe(HT,[HT|_]).
-existe(HT,[_|TC]):-
-    existe(HT,TC).
+existe(H,[H|_]).
+existe(H,[_|T]):-
+    existe(H,T).
 
 contar_albunes_suecos(ANIO,CANTIDAD):-
+    album(_,CANTANTE,_,FECHA,_),
     cantante(CANTANTE,suecia),
-    retract(album(_,CANTANTE,_,FECHA,_)),
     sub_atom(FECHA,6,4,_,ANIO),
+    retract(album(_,CANTANTE,_,FECHA,_)),
     contar_albunes_suecos(ANIO,CANT),
     CANTIDAD is CANT + 1.
 contar_albunes_suecos(_,0).
 
-buscar_albunes(CANTANTE,[H|T]):-
-    retract(album(H,CANTANTE,_,_,COPIAS)),
+get_albunes(CANTANTE,[H|T]):-
+    album(H,CANTANTE,_,_,COPIAS),
     COPIAS >= 1000000,
-    buscar_albunes(CANTANTE,T).
-buscar_albunes(CANTANTE,[_|T]):-
-    retract(album(_,CANTANTE,_,_,_)),
-    buscar_albunes(CANTANTE,T).
-buscar_albunes(_,[]).
+    retract(album(H,CANTANTE,_,_,COPIAS)),
+    get_albunes(CANTANTE,T).
+get_albunes(_,[]).
+
+listar_albunes([H|T]):-
+    album(H,_,_,FECHA,COPIAS),
+    nl,
+    write('Nombre album: '),
+    write(H),
+    write(' - Fecha: '),
+    write(FECHA),
+    write(' Copias: '),
+    writeln(COPIAS),
+    retract(album(H,_,_,FECHA,COPIAS)),
+    listar_albunes(T).
+listar_albunes([]).
