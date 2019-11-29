@@ -30,38 +30,37 @@ menu:-
     nl,
     write('Ingrese el dni del paciente: '),
     read(DNI),
-    asistio_suficiente(DNI).
-
-asistio_suficiente(DNI):-
+    obtener_totalPracticas(DNI,CANTPRACTICAS),
     abrir,
-    contar_todas(DNI,TOTAL),
-    abrir,
-    contar_asistencia(DNI,ASISTENCIAS),
-    TOTAL \= 0,
-    PORCENT is ASISTENCIAS * 100 / TOTAL,
-    mostrar_mensaje(PORCENT).
-asistio_suficiente(_):-
-    nl,
-    writeln('El paciente no posee prácticas.').
+    obtener_totalFaltas(DNI,CANTFALTAS),
+    dar_respuesta(DNI,CANTPRACTICAS,CANTFALTAS).
 
-contar_todas(DNI,TOTAL):-
-    cliente(DNI,_,_),
+obtener_totalPracticas(DNI,CANTPRACTICAS):-
     retract(practica(_,_,_,DNI,_)),
-    contar_todas(DNI,TOT),
-    TOTAL is TOT + 1.
-contar_todas(_,0).
+    obtener_totalPracticas(DNI,CANT),
+    CANTPRACTICAS is CANT + 1.
+obtener_totalPracticas(_,0).
 
-contar_asistencia(DNI,ASISTENCIAS):-
-    cliente(DNI,_,_),
-    retract(practica(_,_,_,DNI,si)),
-    contar_asistencia(DNI,ASIST),
-    ASISTENCIAS is ASIST + 1.
-contar_asistencia(_,0).
+obtener_totalFaltas(DNI,CANTFALTAS):-
+    retract(practica(_,_,_,DNI,no)),
+    obtener_totalFaltas(DNI,CANT),
+    CANTFALTAS is CANT + 1.
+obtener_totalFaltas(_,0).
 
-mostrar_mensaje(PORCENT):-
-    PORCENT >= 20,
+dar_respuesta(DNI,0,_):-
     nl,
-    writeln('El paciente puede faltar.').
-mostrar_mensaje(_):-
+    write('El paciente de dni '),
+    write(DNI),
+    writeln(' no posee prácticas. No hay datos suficientes para dar una respuesta.').
+dar_respuesta(DNI,CANTPRACTICAS,CANTFALTAS):-
     nl,
-    writeln('El paciente no puede faltar.').
+    PORCENT is CANTFALTAS * 100 / CANTPRACTICAS,
+    PORCENT > 80,
+    write('El paciente de dni '),
+    write(DNI),
+    writeln(' no puede faltar.').
+dar_respuesta(DNI,_,_):-
+    nl,
+    write('El paciente de dni '),
+    write(DNI),
+    writeln(' puede faltar.').
